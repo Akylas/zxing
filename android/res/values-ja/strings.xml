@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2011 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -51,8 +51,11 @@
   <string name="contents_phone">電話番号</string>
   <string name="contents_sms">SMSアドレス</string>
   <string name="contents_text">テキストデータ</string>
+  <string name="history_clear_one_history_text">削除</string>
   <string name="history_clear_text">履歴の削除</string>
   <string name="history_email_title">QRコードスキャナー歴史</string>
+  <string name="history_empty">空っぽ</string>
+  <string name="history_empty_detail">にバーコードスキャンが記録されていない</string>
   <string name="history_send">履歴を送信</string>
   <string name="history_title">履歴</string>
   <string name="menu_about">詳細</string>
@@ -63,7 +66,6 @@
   <string name="menu_settings">設定</string>
   <string name="menu_share">共有</string>
   <string name="msg_about">オープンソースのバーコード ライブラリ、ZXing を使用しています</string>
-  <string name="msg_buggy">このデバイスでは、バーコードのスキャンに問題があります。 詳細については、http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions を参照してください </string>
   <string name="msg_bulk_mode_scanned">連続モード：バーコードスキャンして保存</string>
   <string name="msg_camera_framework_bug">申し訳ありませんが、Androidのカメラに問題が発生しました。デバイスを再起動する必要があります。</string>
   <string name="msg_default_format">フォーマット</string>
@@ -78,7 +80,6 @@
   <string name="msg_google_shopper_missing">Google ショッパーがインストールされていません</string>
   <string name="msg_install_google_shopper">Google ショッパーは、ブラウザを使わなくても、価格やレビューなどを見ることができます。試しますか？</string>
   <string name="msg_intent_failed">指定されたアプリケーションを起動できませんでした。バーコードの内容が無効である可能性があります。</string>
-  <string name="msg_not_our_results">このアプリケーションを終了します。この後に表示される検索結果は、このアプリケーションとは関係ありません。</string>
   <string name="msg_redirect">リダイレクト</string>
   <string name="msg_sbc_book_not_searchable">この書籍は検索できません。</string>
   <string name="msg_sbc_failed">検索中に問題が発生しました。</string>
@@ -93,10 +94,11 @@
   <string name="msg_sure">よろしいですか？</string>
   <string name="msg_unmount_usb">申し訳ありませんが、SDカードにアクセスできません。</string>
   <string name="preferences_actions_title">バーコード発見時</string>
+  <string name="preferences_auto_focus_title">オートフォーカスを使用して、</string>
   <string name="preferences_bulk_mode_summary">多くのバーコード連続してスキャンし、保存する</string>
   <string name="preferences_bulk_mode_title">連続モードでのスキャン</string>
   <string name="preferences_copy_to_clipboard_title">クリップボードにコピーする</string>
-  <string name="preferences_custom_product_search_summary" formatted="false">URL中の「%s」はスキャン結果に置換されます</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">置換：％s=コンテンツ、％f=フォーマット、％t=タイプ</string>
   <string name="preferences_custom_product_search_title">カスタム商品サーチ URL</string>
   <string name="preferences_decode_1D_title">1Dバーコードを読み取る</string>
   <string name="preferences_decode_Data_Matrix_title">データマトリックスコードを読み取る</string>
@@ -109,8 +111,6 @@
   <string name="preferences_remember_duplicates_summary">履歴に、同じバーコードを複数記録する</string>
   <string name="preferences_remember_duplicates_title">重複する履歴の記録</string>
   <string name="preferences_result_title">検索結果の設定</string>
-  <string name="preferences_reverse_image_summary">フロントカメラのみを持つデバイスで有効にする</string>
-  <string name="preferences_reverse_image_title">カメラ画像の反転</string>
   <string name="preferences_scanning_title">バーコードスキャン時</string>
   <string name="preferences_search_country">検索国</string>
   <string name="preferences_supplemental_summary">バーコード内容についての詳細情報を取得してみてください</string>

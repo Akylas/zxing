@@ -27,7 +27,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 
 import java.text.DateFormat;
-import java.text.ParsePosition;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -44,6 +44,18 @@ public final class AddressBookResultHandler extends ResultHandler {
     new SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.ENGLISH),
     new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH),
     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH),
+  };
+  static {
+    for (DateFormat format : DATE_FORMATS) {
+      format.setLenient(false);
+    }
+  }
+
+  private static final int[] BUTTON_TEXTS = {
+    R.string.button_add_contact,
+    R.string.button_show_map,
+    R.string.button_dial,
+    R.string.button_email,
   };
 
   private final boolean[] fields;
@@ -97,19 +109,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 
   @Override
   public int getButtonText(int index) {
-    int action = mapIndexToAction(index);
-    switch (action) {
-      case 0:
-        return R.string.button_add_contact;
-      case 1:
-        return R.string.button_show_map;
-      case 2:
-        return R.string.button_dial;
-      case 3:
-        return R.string.button_email;
-      default:
-        throw new ArrayIndexOutOfBoundsException();
-    }
+    return BUTTON_TEXTS[mapIndexToAction(index)];
   }
 
   @Override
@@ -133,7 +133,9 @@ public final class AddressBookResultHandler extends ResultHandler {
                    address1,
                    address1Type,
                    addressResult.getOrg(),
-                   addressResult.getTitle());
+                   addressResult.getTitle(),
+                   addressResult.getURL(),
+                   addressResult.getBirthday());
         break;
       case 1:
         String[] names = addressResult.getNames();
@@ -152,13 +154,11 @@ public final class AddressBookResultHandler extends ResultHandler {
   }
 
   private static Date parseDate(String s) {
-    for (DateFormat currentFomat : DATE_FORMATS) {
-      synchronized (currentFomat) {
-        currentFomat.setLenient(false);
-        Date result = currentFomat.parse(s, new ParsePosition(0));
-        if (result != null) {
-          return result;
-        }
+    for (DateFormat currentFormat : DATE_FORMATS) {
+      try {
+        return currentFormat.parse(s);
+      } catch (ParseException e) {
+        // continue
       }
     }
     return null;
@@ -195,7 +195,7 @@ public final class AddressBookResultHandler extends ResultHandler {
     if (birthday != null && birthday.length() > 0) {
       Date date = parseDate(birthday);
       if (date != null) {
-        ParsedResult.maybeAppend(DateFormat.getDateInstance().format(date.getTime()), contents);
+        ParsedResult.maybeAppend(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date.getTime()), contents);
       }
     }
     ParsedResult.maybeAppend(result.getNote(), contents);

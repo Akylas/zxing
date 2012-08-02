@@ -80,6 +80,9 @@ public final class ViewfinderView extends View {
 
   @Override
   public void onDraw(Canvas canvas) {
+    if (cameraManager == null) {
+      return; // not ready yet, early draw before done configuring
+    }
     Rect frame = cameraManager.getFramingRect();
     if (frame == null) {
       return;
@@ -141,10 +144,11 @@ public final class ViewfinderView extends View {
         paint.setAlpha(CURRENT_POINT_OPACITY / 2);
         paint.setColor(resultPointColor);
         synchronized (currentLast) {
+          float radius = POINT_SIZE / 2.0f;
           for (ResultPoint point : currentLast) {
             canvas.drawCircle(frameLeft + (int) (point.getX() * scaleX),
                               frameTop + (int) (point.getY() * scaleY),
-                              POINT_SIZE / 2, paint);
+                              radius, paint);
           }
         }
       }
@@ -180,7 +184,7 @@ public final class ViewfinderView extends View {
 
   public void addPossibleResultPoint(ResultPoint point) {
     List<ResultPoint> points = possibleResultPoints;
-    synchronized (point) {
+    synchronized (points) {
       points.add(point);
       int size = points.size();
       if (size > MAX_RESULT_POINTS) {

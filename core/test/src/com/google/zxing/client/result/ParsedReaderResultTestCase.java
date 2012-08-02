@@ -19,7 +19,11 @@ package com.google.zxing.client.result;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Tests {@link ParsedResult}.
@@ -28,6 +32,12 @@ import org.junit.Test;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class ParsedReaderResultTestCase extends Assert {
+
+  @Before
+  public void setUp() {
+    Locale.setDefault(Locale.ENGLISH);
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+  }
 
   @Test
   public void testTextType() {
@@ -39,7 +49,7 @@ public final class ParsedReaderResultTestCase extends Assert {
         ParsedResultType.TEXT);
     doTestResult("This: a test with lots of @ nearly-random punctuation! No? OK then.",
         "This: a test with lots of @ nearly-random punctuation! No? OK then.",
-        ParsedResultType.TEXT);
+        ParsedResultType.URI); // Yeah, it's OK that this is thought of as maybe a URI
   }
 
   @Test
@@ -50,7 +60,7 @@ public final class ParsedReaderResultTestCase extends Assert {
     doTestResult("MEBKM:TITLE:Google;URL:google.com;;", "Google\nhttp://google.com",
         ParsedResultType.URI);
     doTestResult("MEBKM:URL:http://google.com;;", "http://google.com", ParsedResultType.URI);
-    doTestResult("MEBKM:URL:HTTPS://google.com;;", "https://google.com", ParsedResultType.URI);
+    doTestResult("MEBKM:URL:HTTPS://google.com;;", "HTTPS://google.com", ParsedResultType.URI);
   }
 
   @Test
@@ -72,7 +82,8 @@ public final class ParsedReaderResultTestCase extends Assert {
     doTestResult("MATMSG:SUB:Stuff;BODY:This is some text;TO:srowen@example.org;;",
         "srowen@example.org\nStuff\nThis is some text", ParsedResultType.EMAIL_ADDRESS);
     doTestResult("TO:srowen@example.org;SUB:Stuff;BODY:This is some text;;",
-        "TO:srowen@example.org;SUB:Stuff;BODY:This is some text;;", ParsedResultType.TEXT);
+        "TO:srowen@example.org;SUB:Stuff;BODY:This is some text;;", ParsedResultType.URI);
+    // Yeah, it's OK that this is thought of as maybe a URI as long as it's not EMAIL_ADDRESS
   }
 
   @Test
@@ -152,7 +163,7 @@ public final class ParsedReaderResultTestCase extends Assert {
     doTestResult("http://google.com", "http://google.com", ParsedResultType.URI);
     doTestResult("google.com", "http://google.com", ParsedResultType.URI);
     doTestResult("https://google.com", "https://google.com", ParsedResultType.URI);
-    doTestResult("HTTP://google.com", "http://google.com", ParsedResultType.URI);
+    doTestResult("HTTP://google.com", "HTTP://google.com", ParsedResultType.URI);
     doTestResult("http://google.com/foobar", "http://google.com/foobar", ParsedResultType.URI);
     doTestResult("https://google.com:443/foobar", "https://google.com:443/foobar", ParsedResultType.URI);
     doTestResult("google.com:443", "http://google.com:443", ParsedResultType.URI);
@@ -202,33 +213,33 @@ public final class ParsedReaderResultTestCase extends Assert {
     // UTC times
     doTestResult("BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504T123456Z\r\n" +
         "DTEND:20080505T234555Z\r\nEND:VEVENT\r\nEND:VCALENDAR",
-        "foo\n20080504T123456Z\n20080505T234555Z",
+        "foo\nMay 4, 2008 12:34:56 PM\nMay 5, 2008 11:45:55 PM",
         ParsedResultType.CALENDAR);
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504T123456Z\r\n" +
-        "DTEND:20080505T234555Z\r\nEND:VEVENT", "foo\n20080504T123456Z\n20080505T234555Z",
+        "DTEND:20080505T234555Z\r\nEND:VEVENT", "foo\nMay 4, 2008 12:34:56 PM\nMay 5, 2008 11:45:55 PM",
         ParsedResultType.CALENDAR);
     // Local times
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504T123456\r\n" +
-        "DTEND:20080505T234555\r\nEND:VEVENT", "foo\n20080504T123456\n20080505T234555",
+        "DTEND:20080505T234555\r\nEND:VEVENT", "foo\nMay 4, 2008 12:34:56 PM\nMay 5, 2008 11:45:55 PM",
         ParsedResultType.CALENDAR);
     // Date only (all day event)
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504\r\n" +
-        "DTEND:20080505\r\nEND:VEVENT", "foo\n20080504\n20080505", ParsedResultType.CALENDAR);
+        "DTEND:20080505\r\nEND:VEVENT", "foo\nMay 4, 2008\nMay 5, 2008", ParsedResultType.CALENDAR);
     // Start time only
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504T123456Z\r\nEND:VEVENT",
-        "foo\n20080504T123456Z", ParsedResultType.CALENDAR);
+        "foo\nMay 4, 2008 12:34:56 PM", ParsedResultType.CALENDAR);
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504T123456\r\nEND:VEVENT",
-        "foo\n20080504T123456", ParsedResultType.CALENDAR);
+        "foo\nMay 4, 2008 12:34:56 PM", ParsedResultType.CALENDAR);
     doTestResult("BEGIN:VEVENT\r\nSUMMARY:foo\r\nDTSTART:20080504\r\nEND:VEVENT",
-        "foo\n20080504", ParsedResultType.CALENDAR);
+        "foo\nMay 4, 2008", ParsedResultType.CALENDAR);
     doTestResult("BEGIN:VEVENT\r\nDTEND:20080505T\r\nEND:VEVENT",
-        "BEGIN:VEVENT\r\nDTEND:20080505T\r\nEND:VEVENT", ParsedResultType.TEXT);
+        "BEGIN:VEVENT\r\nDTEND:20080505T\r\nEND:VEVENT", ParsedResultType.URI);
+    // Yeah, it's OK that this is thought of as maybe a URI as long as it's not CALENDAR
     // Make sure illegal entries without newlines don't crash
     doTestResult(
         "BEGIN:VEVENTSUMMARY:EventDTSTART:20081030T122030ZDTEND:20081030T132030ZEND:VEVENT",
         "BEGIN:VEVENTSUMMARY:EventDTSTART:20081030T122030ZDTEND:20081030T132030ZEND:VEVENT",
-        ParsedResultType.TEXT);
-    doTestResult("BEGIN:VEVENT", "BEGIN:VEVENT", ParsedResultType.TEXT);
+        ParsedResultType.URI);
   }
 
   @Test

@@ -93,11 +93,11 @@ final class DecodedBitStreamParser {
         } else {
           // First handle Hanzi mode which does not start with character count
           if (mode == Mode.HANZI) {
-        		//chinese mode contains a sub set indicator right after mode indicator
-        		int subset = bits.readBits(4);
-        		int countHanzi = bits.readBits(mode.getCharacterCountBits(version));
-        		if (subset == GB2312_SUBSET) {
-        			decodeHanziSegment(bits, result, countHanzi);
+            //chinese mode contains a sub set indicator right after mode indicator
+            int subset = bits.readBits(4);
+            int countHanzi = bits.readBits(mode.getCharacterCountBits(version));
+            if (subset == GB2312_SUBSET) {
+              decodeHanziSegment(bits, result, countHanzi);
             }
           } else {
             // "Normal" QR code modes:
@@ -248,6 +248,9 @@ final class DecodedBitStreamParser {
     // Read two characters at a time
     int start = result.length();
     while (count > 1) {
+      if (bits.available() < 11) {
+        throw FormatException.getFormatInstance();
+      }
       int nextTwoCharsBits = bits.readBits(11);
       result.append(toAlphaNumericChar(nextTwoCharsBits / 45));
       result.append(toAlphaNumericChar(nextTwoCharsBits % 45));
@@ -255,6 +258,9 @@ final class DecodedBitStreamParser {
     }
     if (count == 1) {
       // special case: one character left
+      if (bits.available() < 6) {
+        throw FormatException.getFormatInstance();
+      }
       result.append(toAlphaNumericChar(bits.readBits(6)));
     }
     // See section 6.4.8.1, 6.4.8.2
@@ -316,7 +322,7 @@ final class DecodedBitStreamParser {
     }
   }
 
-  private static int parseECIValue(BitSource bits) {
+  private static int parseECIValue(BitSource bits) throws FormatException {
     int firstByte = bits.readBits(8);
     if ((firstByte & 0x80) == 0) {
       // just one byte
@@ -332,7 +338,7 @@ final class DecodedBitStreamParser {
       int secondThirdBytes = bits.readBits(16);
       return ((firstByte & 0x1F) << 16) | secondThirdBytes;
     }
-    throw new IllegalArgumentException("Bad ECI bits starting with byte " + firstByte);
+    throw FormatException.getFormatInstance();
   }
 
 }

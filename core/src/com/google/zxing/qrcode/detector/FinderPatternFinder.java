@@ -66,15 +66,15 @@ public class FinderPatternFinder {
     this.resultPointCallback = resultPointCallback;
   }
 
-  protected BitMatrix getImage() {
+  protected final BitMatrix getImage() {
     return image;
   }
 
-  protected List<FinderPattern> getPossibleCenters() {
+  protected final List<FinderPattern> getPossibleCenters() {
     return possibleCenters;
   }
 
-  FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {
+  final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {
     boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
     int maxI = image.getHeight();
     int maxJ = image.getWidth();
@@ -390,7 +390,7 @@ public class FinderPatternFinder {
    * @param j end of possible finder pattern in row
    * @return true if a finder pattern candidate was found this time
    */
-  protected boolean handlePossibleCenter(int[] stateCount, int i, int j) {
+  protected final boolean handlePossibleCenter(int[] stateCount, int i, int j) {
     int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
         stateCount[4];
     float centerJ = centerFromEnd(stateCount, j);
@@ -549,7 +549,7 @@ public class FinderPatternFinder {
   /**
    * <p>Orders by furthest from average</p>
    */
-  private static class FurthestFromAverageComparator implements Comparator<FinderPattern>, Serializable {
+  private static final class FurthestFromAverageComparator implements Comparator<FinderPattern>, Serializable {
     private final float average;
     private FurthestFromAverageComparator(float f) {
       average = f;
@@ -565,7 +565,7 @@ public class FinderPatternFinder {
   /**
    * <p>Orders by {@link FinderPattern#getCount()}, descending.</p>
    */
-  private static class CenterComparator implements Comparator<FinderPattern>, Serializable {
+  private static final class CenterComparator implements Comparator<FinderPattern>, Serializable {
     private final float average;
     private CenterComparator(float f) {
       average = f;

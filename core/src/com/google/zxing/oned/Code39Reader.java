@@ -146,8 +146,8 @@ public final class Code39Reader extends OneDReader {
       result.setLength(max);
     }
 
-    if (result.length() < 4) {
-      // Almost surely a false positive
+    if (result.length() == 0) {
+      // false positive
       throw NotFoundException.getNotFoundInstance();
     }
 
@@ -184,11 +184,10 @@ public final class Code39Reader extends OneDReader {
         counters[counterPosition]++;
       } else {
         if (counterPosition == patternLength - 1) {
-          if (toNarrowWidePattern(counters) == ASTERISK_ENCODING) {
-            // Look for whitespace before start pattern, >= 50% of width of start pattern
-            if (row.isRange(Math.max(0, patternStart - ((i - patternStart) >> 1)), patternStart, false)) {
-              return new int[]{patternStart, i};
-            }
+          // Look for whitespace before start pattern, >= 50% of width of start pattern
+          if (toNarrowWidePattern(counters) == ASTERISK_ENCODING &&
+              row.isRange(Math.max(0, patternStart - ((i - patternStart) >> 1)), patternStart, false)) {
+            return new int[]{patternStart, i};
           }
           patternStart += counters[0] + counters[1];
           System.arraycopy(counters, 2, counters, 0, patternLength - 2);
@@ -213,8 +212,7 @@ public final class Code39Reader extends OneDReader {
     int wideCounters;
     do {
       int minCounter = Integer.MAX_VALUE;
-      for (int i = 0; i < numCounters; i++) {
-        int counter = counters[i];
+      for (int counter : counters) {
         if (counter < minCounter && counter > maxNarrowCounter) {
           minCounter = counter;
         }

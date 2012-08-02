@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2011 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -51,8 +51,11 @@
   <string name="contents_phone">Телефон</string>
   <string name="contents_sms">SMS адрес</string>
   <string name="contents_text">Чист текст</string>
+  <string name="history_clear_one_history_text">Изчисти</string>
   <string name="history_clear_text">Изчисти историята</string>
   <string name="history_email_title">История на Баркод Скенера</string>
+  <string name="history_empty">Празен</string>
+  <string name="history_empty_detail">Не баркод сканиране са записани още</string>
   <string name="history_send">Изпрати историята</string>
   <string name="history_title">История</string>
   <string name="menu_about">Относно</string>
@@ -63,7 +66,6 @@
   <string name="menu_settings">Настройки</string>
   <string name="menu_share">Сподели</string>
   <string name="msg_about">Базирано на библиотеката с отворен код\nZXing Barcode</string>
-  <string name="msg_buggy">Това устройство демонстрира проблеми при сканиране на баркодове. За повече информация посетете http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
   <string name="msg_bulk_mode_scanned">Масов режим: баркодът е сканиран и записан</string>
   <string name="msg_camera_framework_bug">Съжаляваме, срещнахме проблем с камерата. Може да се наложи да рестартирате устройството си.</string>
   <string name="msg_default_format">Формат</string>
@@ -78,7 +80,6 @@
   <string name="msg_google_shopper_missing">Гугъл Магазин не е инсталиран</string>
   <string name="msg_install_google_shopper">Гугъл Магазин комбинира сканирането на баркодове с онлайн и локални цени, отзиви и още много неща без да отваряте браузър. Желаете ли да опитате?</string>
   <string name="msg_intent_failed">Съжаляваме, но нужното приложение не успя да се стартира. Възможно е баркода или съдържанието му да са невалидни.</string>
-  <string name="msg_not_our_results">Напускате това приложение. Резултатите от търсенето, които ще видите, не са свързани с това приложение.</string>
   <string name="msg_redirect">Пренасочване</string>
   <string name="msg_sbc_book_not_searchable">Съжаляваме, тази книга не може да се претърсва.</string>
   <string name="msg_sbc_failed">Съжаляваме, срещнахме проблем при търсенето.</string>
@@ -93,10 +94,11 @@
   <string name="msg_sure">Сигурни ли сте?</string>
   <string name="msg_unmount_usb">Съжаляваме, но SD картата не е достъпна.</string>
   <string name="preferences_actions_title">При прочитане на баркод\u2026</string>
+  <string name="preferences_auto_focus_title">Използване на автоматично фокусиране</string>
   <string name="preferences_bulk_mode_summary">Сканирай и запомняй множество баркодове без прекъсване</string>
   <string name="preferences_bulk_mode_title">Масово сканиране</string>
   <string name="preferences_copy_to_clipboard_title">Копиране в клипборда</string>
-  <string name="preferences_custom_product_search_summary" formatted="false">Използвайте %s за идентификатора и %f за формата</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">Използвайте: %s = съдържанието,%f = форматa, %t = тип</string>
   <string name="preferences_custom_product_search_title">Потребителски адрес за търсене</string>
   <string name="preferences_decode_1D_title">1D Баркодове</string>
   <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
@@ -109,8 +111,6 @@
   <string name="preferences_remember_duplicates_summary">Записвай множество сканирания на един и същи баркод в историята</string>
   <string name="preferences_remember_duplicates_title">Запомняне на повторенията</string>
   <string name="preferences_result_title">Настройки за резултата</string>
-  <string name="preferences_reverse_image_summary">Включете го за устройства само с предна камера</string>
-  <string name="preferences_reverse_image_title">Обърнато изображение</string>
   <string name="preferences_scanning_title">При сканиране да се декодират\u2026</string>
   <string name="preferences_search_country">Държава при търсене</string>
   <string name="preferences_supplemental_summary">Опитай да получиш повече информация за баркода</string>

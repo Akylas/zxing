@@ -41,7 +41,7 @@
   return [NSURL URLWithString:urlString];
 }
 
--(id) initWithNumber:(NSString *)n body:(NSString *)b {
+- (id)initWithNumber:(NSString *)n body:(NSString *)b {
   if ((self = [super initWithURL:[[self class] urlForNumber:n withBody:b]]) != nil) {
     self.number = n;
     self.body = b;
@@ -49,15 +49,15 @@
   return self;
 }
 
--(id) initWithNumber:(NSString *)n {
+- (id)initWithNumber:(NSString *)n {
   return [self initWithNumber:n body:nil];
 }
 
-+(id) actionWithNumber:(NSString *)number body:(NSString *)body {
++ (id)actionWithNumber:(NSString *)number body:(NSString *)body {
   return [[[self alloc] initWithNumber:number body:body] autorelease];
 }
 
-+(id) actionWithNumber:(NSString *)number {
++ (id)actionWithNumber:(NSString *)number {
   return [self actionWithNumber:number body:nil];
 }
 

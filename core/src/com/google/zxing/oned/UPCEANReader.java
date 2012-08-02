@@ -44,7 +44,7 @@ public abstract class UPCEANReader extends OneDReader {
   // These two values are critical for determining how permissive the decoding will be.
   // We've arrived at these values through a lot of trial and error. Setting them any higher
   // lets false positives creep in quickly.
-  private static final int MAX_AVG_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
+  private static final int MAX_AVG_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.48f);
   private static final int MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f);
 
   /**
@@ -192,6 +192,7 @@ public abstract class UPCEANReader extends OneDReader {
 
     try {
       Result extensionResult = extensionReader.decodeRow(rowNumber, row, endRange[1]);
+      decodeResult.putMetadata(ResultMetadataType.UPC_EAN_EXTENSION, extensionResult.getText());
       decodeResult.putAllMetadata(extensionResult.getResultMetadata());
       decodeResult.addResultPoints(extensionResult.getResultPoints());
     } catch (ReaderException re) {
@@ -270,11 +271,11 @@ public abstract class UPCEANReader extends OneDReader {
    * @return start/end horizontal offset of guard pattern, as an array of two ints
    * @throws NotFoundException if pattern is not found
    */
-  static int[] findGuardPattern(BitArray row,
-                                int rowOffset,
-                                boolean whiteFirst,
-                                int[] pattern,
-                                int[] counters) throws NotFoundException {
+  private static int[] findGuardPattern(BitArray row,
+                                        int rowOffset,
+                                        boolean whiteFirst,
+                                        int[] pattern,
+                                        int[] counters) throws NotFoundException {
     int patternLength = pattern.length;
     int width = row.getSize();
     boolean isWhite = whiteFirst;

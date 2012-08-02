@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2011 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -51,8 +51,11 @@
   <string name="contents_phone">Telefonszám</string>
   <string name="contents_sms">SMS szám</string>
   <string name="contents_text">Egyszerű szöveg</string>
+  <string name="history_clear_one_history_text">Törlése</string>
   <string name="history_clear_text">Előzmények törlése</string>
   <string name="history_email_title">Barcode Scanner előzmények</string>
+  <string name="history_empty">Üres</string>
+  <string name="history_empty_detail">Nem vonalkód szkennelés lett felvéve még</string>
   <string name="history_send">Előzmények küldése</string>
   <string name="history_title">Előzmények</string>
   <string name="menu_about">Rólunk</string>
@@ -63,7 +66,6 @@
   <string name="menu_settings">Beállítások</string>
   <string name="menu_share">Megosztás</string>
   <string name="msg_about">A nyílt forráskódú ZXing vonalkód projekt hivatalos Android alkalmazása.</string>
-  <string name="msg_buggy">Ennek a készüléknek vannak ismert hibái, melyek vonalkód olvasási problémákat okoznak. További információkért látogassa meg a http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions weboldalt</string>
   <string name="msg_bulk_mode_scanned">Tömeges beolvasás: vonalkód beszkennelve és mentve</string>
   <string name="msg_camera_framework_bug">Android kamera hiba. Lehet, hogy újra kell indítania a készüléket.</string>
   <string name="msg_default_format">Formátum</string>
@@ -78,7 +80,6 @@
   <string name="msg_google_shopper_missing">A Google Shopper nincs telepítve</string>
   <string name="msg_install_google_shopper">A Google Shopper kombinálja a vonalkód szkennelést árakkal, értékelésekkel és más dolgokkal, böngésző megnyitása nélkül. Ki szeretné próbálni?</string>
   <string name="msg_intent_failed">A kért alkalmazást nem lehet elindítani. A vonalkód tartalma lehet, hogy érvénytelen.</string>
-  <string name="msg_not_our_results">Kilépés az alkalmazásból. A keresési találatok, amiket látni fog, nincsenek kapcsolatban az alkalmazással.</string>
   <string name="msg_redirect">Átirányítás</string>
   <string name="msg_sbc_book_not_searchable">Ez a könyv nem kereshető.</string>
   <string name="msg_sbc_failed">A keresés problémába ütközött.</string>
@@ -93,10 +94,11 @@
   <string name="msg_sure">Biztos benne?</string>
   <string name="msg_unmount_usb">Az SD kártya nem elérhető.</string>
   <string name="preferences_actions_title">Amikor a vonalkód megvan\u2026</string>
+  <string name="preferences_auto_focus_title">Használja autofókusz</string>
   <string name="preferences_bulk_mode_summary">Több vonalkód folyamatos szkennelése és mentése</string>
   <string name="preferences_bulk_mode_title">Tömeges beolvasás</string>
   <string name="preferences_copy_to_clipboard_title">Másolás a vágólapra</string>
-  <string name="preferences_custom_product_search_summary" formatted="false">Használjon %s-t a termék-azonosító helyén, %f-et pedig a formátum helyén</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">Használjon: %s = tartalom, %f = formátum, %t = típus</string>
   <string name="preferences_custom_product_search_title">Egyedi kereső URL</string>
   <string name="preferences_decode_1D_title">1D vonalkódok</string>
   <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
@@ -109,8 +111,6 @@
   <string name="preferences_remember_duplicates_summary">Ugyanannak a vonalkódnak több szkennelt képét is tárolja az Előzményekben</string>
   <string name="preferences_remember_duplicates_title">Duplikációk megjegyzése</string>
   <string name="preferences_result_title">Találati beállítások</string>
-  <string name="preferences_reverse_image_summary">Engedélyezze a csak elülső kamerával rendelkező készülékeken</string>
-  <string name="preferences_reverse_image_title">Fordított kamerakép</string>
   <string name="preferences_scanning_title">Vonalkód szkennelésekor, dekódoláskor\u2026</string>
   <string name="preferences_search_country">Ország keresése</string>
   <string name="preferences_supplemental_summary">A vonalkóddal jelzett tartalomról megpróbál több információt letölteni.</string>

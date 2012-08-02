@@ -88,8 +88,8 @@ public final class Code93Reader extends OneDReader {
       throw NotFoundException.getNotFoundInstance();
     }
 
-    if (result.length() < 4) {
-      // Almost surely a false positive
+    if (result.length() < 2) {
+      // false positive -- need at least 2 checksum digits
       throw NotFoundException.getNotFoundInstance();
     }
 
@@ -147,8 +147,8 @@ public final class Code93Reader extends OneDReader {
   private static int toPattern(int[] counters) {
     int max = counters.length;
     int sum = 0;
-    for (int i = 0; i < max; i++) {
-      sum += counters[i];
+    for (int counter : counters) {
+      sum += counter;
     }
     int pattern = 0;
     for (int i = 0; i < max; i++) {
@@ -186,6 +186,9 @@ public final class Code93Reader extends OneDReader {
     for (int i = 0; i < length; i++) {
       char c = encoded.charAt(i);
       if (c >= 'a' && c <= 'd') {
+        if (i >= length - 1) {
+          throw FormatException.getFormatInstance();
+        }
         char next = encoded.charAt(i + 1);
         char decodedChar = '\0';
         switch (c) {

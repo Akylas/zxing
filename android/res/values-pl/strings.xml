@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2011 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -51,8 +51,11 @@
   <string name="contents_phone">Numer telefonu</string>
   <string name="contents_sms">Adres SMS</string>
   <string name="contents_text">Zwykły tekst</string>
+  <string name="history_clear_one_history_text">Wyczyść</string>
   <string name="history_clear_text">Wyczyść historię</string>
   <string name="history_email_title">Historia Skanera Kodów Paskowych</string>
+  <string name="history_empty">Pusty</string>
+  <string name="history_empty_detail">Brak skanowania kodów kreskowych zostały zarejestrowane</string>
   <string name="history_send">Wyślij historię</string>
   <string name="history_title">Historia</string>
   <string name="menu_about">O aplikacji</string>
@@ -63,7 +66,6 @@
   <string name="menu_settings">Ustawienia</string>
   <string name="menu_share">Udostępnij</string>
   <string name="msg_about">Bazowane na bibliotece kodów paskowych ZXing o otwartym źródle</string>
-  <string name="msg_buggy">To urządzenie wykazuje znane błędy które powodują problemy podczas skanowania kodów paskowych. W celu otrzymania dalszych informacji, odwiedź http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
   <string name="msg_bulk_mode_scanned">Tryb zbiorcze: skanowania kodów kreskowych i zapisaniu</string>
   <string name="msg_camera_framework_bug">Przepraszamy, aparat Android napotkał problem. Może wystąpić potrzeba ponownego uruchomienia urządzenia.</string>
   <string name="msg_default_format">Format</string>
@@ -78,7 +80,6 @@
   <string name="msg_google_shopper_missing">Google Shopper nie jest zainstalowany</string>
   <string name="msg_install_google_shopper">Google Shopper łączy skanowanie kodów paskowych z cenami, recenzjami, itp bez otwierania przeglądarki. Czy chciał/a byś go wypróbować?</string>
   <string name="msg_intent_failed">Przepraszamy, żadana aplikacja nie może zostać uruchomiona. Zawartość kodu paskowego może być nieprawidłowa.</string>
-  <string name="msg_not_our_results">Opuszczasz tą aplikację. Rezultaty wyszukiwania które zobaczysz nie są związane z tą aplikacją.</string>
   <string name="msg_redirect">Przekierowanie</string>
   <string name="msg_sbc_book_not_searchable">Przepraszamy, ta książka nie jest przeszukiwalna.</string>
   <string name="msg_sbc_failed">Przepraszamy, wyszukiwania napotkało problem.</string>
@@ -93,10 +94,11 @@
   <string name="msg_sure">Czy na pewno?</string>
   <string name="msg_unmount_usb">Niestety, karta SD nie jest dostępny.</string>
   <string name="preferences_actions_title">Kiedy kod paskowy zostaje odnaleziony\u2026</string>
+  <string name="preferences_auto_focus_title">Ustawić ostrość</string>
   <string name="preferences_bulk_mode_summary">Skanowanie i zapisywanie wielu kodów kreskowych ciągle</string>
   <string name="preferences_bulk_mode_title">Luzem tryb skanowania</string>
   <string name="preferences_copy_to_clipboard_title">Kopiuj do schowka</string>
-  <string name="preferences_custom_product_search_summary" formatted="false">Użyj %s jako zamiennik dla ID produktu, a dla formatu %f</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">Zastępstwa: %s = zawartość, %f = format, %t = typ</string>
   <string name="preferences_custom_product_search_title">Własny URL wyszukiwania</string>
   <string name="preferences_decode_1D_title">Dekoduj kody 1D</string>
   <string name="preferences_decode_Data_Matrix_title">Dekoduj Decode Matrix</string>
@@ -109,8 +111,6 @@
   <string name="preferences_remember_duplicates_summary">Przechowywanie wielu skanowanie kodów kreskowych w tej samej historii</string>
   <string name="preferences_remember_duplicates_title">Pamiętaj, duplikaty</string>
   <string name="preferences_result_title">Ustawienia rezultatów</string>
-  <string name="preferences_reverse_image_summary">Włącz na urządzeniach z przedniej kamery tylko</string>
-  <string name="preferences_reverse_image_title">Odwrócony obraz z kamery</string>
   <string name="preferences_scanning_title">Podczas skanowania kodów kreskowych\u2026</string>
   <string name="preferences_search_country">Szukaj kraju</string>
   <string name="preferences_supplemental_summary">Prosimy spróbować wyszukać więcej informacji na temat kodów kreskowych treści</string>
