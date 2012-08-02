@@ -38,35 +38,19 @@ static const CGFloat kPadding = 10;
   self = [super initWithFrame:theFrame];
   if( self ) {
 
-    CGFloat rectSize = self.frame.size.width - kPadding * 2;
-    if (!oneDMode) {
-      cropRect = CGRectMake(kPadding, (self.frame.size.height - rectSize) / 2, rectSize, rectSize);
-    } else {
-      CGFloat rectSize2 = self.frame.size.height - kPadding * 2;
-      cropRect = CGRectMake(kPadding, kPadding, rectSize, rectSize2);		
-    }
+      self.displayedMessage = @"Place a barcode inside the viewfinder rectangle to scan it.";
 
     self.backgroundColor = [UIColor clearColor];
     self.oneDMode = isOneDModeEnabled;
-    if (isCancelEnabled) {
-      UIButton *butt = [UIButton buttonWithType:UIButtonTypeRoundedRect]; 
-      self.cancelButton = butt;
-      [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-      if (oneDMode) {
-        [cancelButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-        
-        [cancelButton setFrame:CGRectMake(20, 175, 45, 130)];
-      }
-      else {
-        CGSize theSize = CGSizeMake(100, 50);
-        CGRect theRect = CGRectMake((theFrame.size.width - theSize.width) / 2, cropRect.origin.y + cropRect.size.height + 20, theSize.width, theSize.height);
-        [cancelButton setFrame:theRect];
-        
-      }
-      
-      [cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
-      [self addSubview:cancelButton];
-      [self addSubview:imageView];
+    if (isCancelEnabled) 
+    {
+        UIButton *butt = [UIButton buttonWithType:UIButtonTypeRoundedRect]; 
+        self.cancelButton = butt;
+        [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+
+        [cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:cancelButton];
+        [self addSubview:imageView];
     }
   }
   return self;
@@ -88,6 +72,29 @@ static const CGFloat kPadding = 10;
 	[super dealloc];
 }
 
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    CGFloat rectSize = MIN(self.frame.size.width, self.frame.size.height) - kPadding * 2;
+    if (!oneDMode) {
+        cropRect = CGRectMake(self.frame.size.width/2 - rectSize/2, self.frame.size.height/2 - rectSize/2, rectSize, rectSize);	
+    } else {
+        cropRect = CGRectMake(kPadding, kPadding, self.frame.size.width - kPadding * 2, self.frame.size.height - kPadding * 2);		
+    }
+    
+    if (oneDMode) {
+        [cancelButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+        
+        [cancelButton setFrame:CGRectMake(20, 175, 45, 130)];
+    }
+    else {
+        CGSize theSize = CGSizeMake(100, 50);
+        CGRect theRect = CGRectMake((self.frame.size.width - theSize.width) / 2, cropRect.origin.y + cropRect.size.height + 20, theSize.width, theSize.height);
+        [cancelButton setFrame:theRect];
+        
+    }
+}
 
 - (void)drawRect:(CGRect)rect inContext:(CGContextRef)context {
 	CGContextBeginPath(context);
@@ -105,23 +112,23 @@ static const CGFloat kPadding = 10;
     center.y = cropRect.size.height/2;
     float x = point.x - center.x;
     float y = point.y - center.y;
-    int rotation = 90;
-    switch(rotation) {
-    case 0:
-        point.x = x;
-        point.y = y;
-        break;
-    case 90:
+//    int rotation = 90;
+    switch([UIApplication sharedApplication].statusBarOrientation) {
+    case UIInterfaceOrientationLandscapeRight:
         point.x = -y;
         point.y = x;
         break;
-    case 180:
+    case UIInterfaceOrientationPortrait:
         point.x = -x;
         point.y = -y;
         break;
-    case 270:
+    case UIInterfaceOrientationLandscapeLeft:
         point.x = y;
         point.y = -x;
+        break;
+    case UIInterfaceOrientationPortraitUpsideDown:
+        point.x = x;
+        point.y = y;
         break;
     }
     point.x = point.x + center.x;
@@ -134,9 +141,7 @@ static const CGFloat kPadding = 10;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-  if (displayedMessage == nil) {
-    self.displayedMessage = @"Place a barcode inside the viewfinder rectangle to scan it.";
-  }
+
 	CGContextRef c = UIGraphicsGetCurrentContext();
   
 	if (nil != _points) {
@@ -160,9 +165,9 @@ static const CGFloat kPadding = 10;
 	}
 	else {
     UIFont *font = [UIFont systemFontOfSize:18];
-    CGSize constraint = CGSizeMake(rect.size.width  - 2 * kTextMargin, cropRect.origin.y);
-    CGSize displaySize = [self.displayedMessage sizeWithFont:font constrainedToSize:constraint];
-    CGRect displayRect = CGRectMake((rect.size.width - displaySize.width) / 2 , cropRect.origin.y - displaySize.height, displaySize.width, displaySize.height);
+//    CGSize constraint = cropRect.size;
+//    CGSize displaySize = [self.displayedMessage sizeWithFont:font constrainedToSize:constraint];
+    CGRect displayRect = cropRect;
     [self.displayedMessage drawInRect:displayRect withFont:font lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
 	}
 	CGContextRestoreGState(c);

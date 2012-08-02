@@ -142,6 +142,10 @@
 		3B81AAF9120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B81AAF7120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h */; };
 		AA747D9F0F9514B9006C5449 /* ZXingWidget_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* ZXingWidget_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		D51BF4D714D1B2E20089A309 /* EAN8Reader.h in Headers */ = {isa = PBXBuildFile; fileRef = D51BF4D514D1B2E10089A309 /* EAN8Reader.h */; };
+		D51BF4D814D1B2E20089A309 /* EAN8Reader.mm in Sources */ = {isa = PBXBuildFile; fileRef = D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */; };
+		D594813C14B1A56C004729E4 /* ZxingPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = D594813A14B1A56C004729E4 /* ZxingPreview.h */; };
+		D594813D14B1A56C004729E4 /* ZxingPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = D594813B14B1A56C004729E4 /* ZxingPreview.m */; };
 		E534594311987396000CB77F /* BarcodeFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E53458B511987396000CB77F /* BarcodeFormat.cpp */; };
 		E534594411987396000CB77F /* BarcodeFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = E53458B611987396000CB77F /* BarcodeFormat.h */; };
 		E534594511987396000CB77F /* Binarizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E53458B711987396000CB77F /* Binarizer.cpp */; };
@@ -425,6 +429,10 @@
 		AA747D9E0F9514B9006C5449 /* ZXingWidget_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXingWidget_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libZXingWidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZXingWidget.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D51BF4D514D1B2E10089A309 /* EAN8Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAN8Reader.h; path = Classes/EAN8Reader.h; sourceTree = "<group>"; };
+		D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAN8Reader.mm; path = Classes/EAN8Reader.mm; sourceTree = "<group>"; };
+		D594813A14B1A56C004729E4 /* ZxingPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZxingPreview.h; path = Classes/ZxingPreview.h; sourceTree = "<group>"; };
+		D594813B14B1A56C004729E4 /* ZxingPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZxingPreview.m; path = Classes/ZxingPreview.m; sourceTree = "<group>"; };
 		E53458B511987396000CB77F /* BarcodeFormat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BarcodeFormat.cpp; sourceTree = "<group>"; };
 		E53458B611987396000CB77F /* BarcodeFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BarcodeFormat.h; sourceTree = "<group>"; };
 		E53458B711987396000CB77F /* Binarizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Binarizer.cpp; sourceTree = "<group>"; };
@@ -636,6 +644,8 @@
 				1DFA090B13CE1A3900599044 /* CBarcodeFormat.mm */,
 				1F3DB0F511C61080009C581B /* DataMatrixReader.h */,
 				1F3DB0F611C61080009C581B /* DataMatrixReader.mm */,
+				D51BF4D514D1B2E10089A309 /* EAN8Reader.h */,
+				D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */,
 				1F3DB0F711C61080009C581B /* MultiFormatOneDReader.h */,
 				1F3DB0F811C61080009C581B /* MultiFormatOneDReader.mm */,
 				1F3DB0F911C61080009C581B /* MultiFormatUPCEANReader.h */,
@@ -644,6 +654,8 @@
 				1F3DB0C111C60DB4009C581B /* QRCodeReader.mm */,
 				1F027FB711A7BEBF006B06DE /* TwoDDecoderResult.h */,
 				1F027FB811A7BEBF006B06DE /* TwoDDecoderResult.m */,
+				D594813A14B1A56C004729E4 /* ZxingPreview.h */,
+				D594813B14B1A56C004729E4 /* ZxingPreview.m */,
 				1F027FB911A7BEBF006B06DE /* ZXingWidgetController.h */,
 				1F027FBA11A7BEBF006B06DE /* ZXingWidgetController.m */,
 				1F027F9F11A7BEAF006B06DE /* Decoder.h */,
@@ -1159,6 +1171,8 @@
 				3B27C5E2144735E6005157C4 /* CharacterSetECI.h in Headers */,
 				3B27C5E4144735E6005157C4 /* ECI.h in Headers */,
 				3B27C5E6144735E6005157C4 /* StringUtils.h in Headers */,
+				D594813C14B1A56C004729E4 /* ZxingPreview.h in Headers */,
+				D51BF4D714D1B2E20089A309 /* EAN8Reader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1207,7 +1221,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "ZXingWidget" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1402,6 +1416,8 @@
 				3B117EF1145B220A0035037B /* MonochromeRectangleDetector.cpp in Sources */,
 				3B117EF2145B220A0035037B /* WhiteRectangleDetector.cpp in Sources */,
 				3B117EF5145B221D0035037B /* NotFoundException.cpp in Sources */,
+				D594813D14B1A56C004729E4 /* ZxingPreview.m in Sources */,
+				D51BF4D814D1B2E20089A309 /* EAN8Reader.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1428,6 +1444,7 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "ZXingTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1453,6 +1470,7 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "ZXingTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1480,6 +1498,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ZXingWidget_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = ../../cpp/core/src;
 				INSTALL_PATH = /usr/local/lib;
 				LD_GENERATE_MAP_FILE = YES;
@@ -1504,6 +1523,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ZXingWidget_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = ../../cpp/core/src;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = ZXingWidget;
@@ -1521,6 +1541,7 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1547,6 +1568,7 @@
 					armv7,
 				);
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

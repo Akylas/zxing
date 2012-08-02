@@ -150,7 +150,7 @@ namespace zxing {
       // We're going to fake floating-point math in integers. We just need to use more bits.
       // Scale up patternLength so that intermediate values below like scaledCounter will have
       // more "significant digits"
-      unsigned int unitBarWidth = (total << INTEGER_MATH_SHIFT) / patternLength;
+      unsigned int unitBarWidth = (patternLength == 0)?0:(total << INTEGER_MATH_SHIFT) / patternLength;
       maxIndividualVariance = (maxIndividualVariance * unitBarWidth) >> INTEGER_MATH_SHIFT;
 
       unsigned int totalVariance = 0;
@@ -163,7 +163,7 @@ namespace zxing {
         }
         totalVariance += variance;
       }
-      return totalVariance / total;
+      return (total == 0)?0:totalVariance / total;
     }
 
     bool OneDReader::recordPattern(Ref<BitArray> row, int start, int counters[], int countersCount) {

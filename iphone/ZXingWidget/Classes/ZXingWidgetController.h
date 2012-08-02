@@ -20,6 +20,15 @@
 #include "Decoder.h"
 #include "parsedResults/ParsedResult.h"
 #include "OverlayView.h"
+#include "ZxingPreview.h"
+
+// orientation set support
+#define ZXingOrientationMask(orient) (1 << orient)
+#define ZXingrOrientationMaskAll \
+(ZXingOrientationMask(UIInterfaceOrientationPortrait) | \
+ZXingOrientationMask(UIInterfaceOrientationPortraitUpsideDown) | \
+ZXingOrientationMask(UIInterfaceOrientationLandscapeLeft) | \
+ZXingOrientationMask(UIInterfaceOrientationLandscapeRight))
 
 @protocol ZXingDelegate;
 
@@ -37,29 +46,35 @@
   NSSet *readers;
   ParsedResult *result;
   OverlayView *overlayView;
+  ZxingPreview *preview;
   SystemSoundID beepSound;
   BOOL showCancel;
   NSURL *soundToPlay;
   id<ZXingDelegate> delegate;
   BOOL wasCancelled;
   BOOL oneDMode;
-#if HAS_AVFF
+//#if HAS_AVFF
   AVCaptureSession *captureSession;
-  AVCaptureVideoPreviewLayer *prevLayer;
-#endif
+//#endif
   BOOL decoding;
   BOOL isStatusBarHidden;
+  BOOL rotating;
+  NSUInteger supportedOrientationsMask;
 }
 
-#if HAS_AVFF
+//#if HAS_AVFF
 @property (nonatomic, retain) AVCaptureSession *captureSession;
-@property (nonatomic, retain) AVCaptureVideoPreviewLayer *prevLayer;
-#endif
+//#endif
 @property (nonatomic, retain ) NSSet *readers;
 @property (nonatomic, assign) id<ZXingDelegate> delegate;
 @property (nonatomic, retain) NSURL *soundToPlay;
 @property (nonatomic, retain) ParsedResult *result;
 @property (nonatomic, retain) OverlayView *overlayView;
+@property (nonatomic, retain) ZxingPreview *preview;
+
+// interface orientation support.  bit-mask of accepted orientations.
+// see eg ZXingOrientationMask() and ZXingOrientationMaskAll
+@property (nonatomic) NSUInteger supportedOrientationsMask;
 
 - (id)initWithDelegate:(id<ZXingDelegate>)delegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode;
 

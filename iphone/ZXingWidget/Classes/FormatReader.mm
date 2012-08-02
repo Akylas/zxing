@@ -59,13 +59,13 @@ static NSMutableSet *sFormatReaders = nil;
 }
 
 - (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage {
-  return reader_->decode(grayImage);
+  return reader_->decode(grayImage->rotateCounterClockwise());
 }
 
 - (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback {
     zxing::DecodeHints hints;
     hints.setResultPointCallback(callback);
-    return reader_->decode(grayImage, hints);
+    return reader_->decode(grayImage->rotateCounterClockwise(), hints);
 }
 
 @end
