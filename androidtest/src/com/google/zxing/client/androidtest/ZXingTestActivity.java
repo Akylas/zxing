@@ -24,12 +24,13 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -40,12 +41,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public final class ZXingTestActivity extends Activity {
 
   private static final String TAG = ZXingTestActivity.class.getSimpleName();
-  private static final int ABOUT_ID = Menu.FIRST;
   private static final String PACKAGE_NAME = ZXingTestActivity.class.getPackage().getName();
+  private static final Pattern SEMICOLON = Pattern.compile(";");
 
   @Override
   public void onCreate(Bundle icicle) {
@@ -70,21 +72,21 @@ public final class ZXingTestActivity extends Activity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    menu.add(0, ABOUT_ID, 0, R.string.about_menu).setIcon(android.R.drawable.ic_menu_info_details);
-    return true;
+    MenuInflater menuInflater = getMenuInflater();
+    menuInflater.inflate(R.menu.main, menu);
+    return super.onCreateOptionsMenu(menu);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == ABOUT_ID) {
+    if (item.getItemId() == R.id.menu_about) {
       int versionCode;
       String versionName;
       try {
         PackageInfo info = getPackageManager().getPackageInfo(PACKAGE_NAME, 0);
         versionCode = info.versionCode;
         versionName = info.versionName;
-      } catch (PackageManager.NameNotFoundException e) {
+      } catch (PackageManager.NameNotFoundException ignored) {
         versionCode = 0;
         versionName = "unknown";
       }
@@ -113,7 +115,7 @@ public final class ZXingTestActivity extends Activity {
   }
   
 
-  private final Button.OnClickListener getCameraParameters = new Button.OnClickListener() {
+  private final View.OnClickListener getCameraParameters = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       String stats = collectStats();
@@ -126,7 +128,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener runBenchmark = new Button.OnClickListener() {
+  private final View.OnClickListener runBenchmark = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -135,7 +137,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener scanProduct = new Button.OnClickListener() {
+  private final View.OnClickListener scanProduct = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
@@ -147,7 +149,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener scanQRCode = new Button.OnClickListener() {
+  private final View.OnClickListener scanQRCode = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
@@ -155,7 +157,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener scanAnything = new Button.OnClickListener() {
+  private final View.OnClickListener scanAnything = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
@@ -163,7 +165,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener searchBookContents = new Button.OnClickListener() {
+  private final View.OnClickListener searchBookContents = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       Intent intent = new Intent("com.google.zxing.client.android.SEARCH_BOOK_CONTENTS");
@@ -173,35 +175,35 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener encodeURL = new Button.OnClickListener() {
+  private final View.OnClickListener encodeURL = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       encodeBarcode("TEXT_TYPE", "http://www.nytimes.com");
     }
   };
 
-  private final Button.OnClickListener encodeEmail = new Button.OnClickListener() {
+  private final View.OnClickListener encodeEmail = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       encodeBarcode("EMAIL_TYPE", "foo@example.com");
     }
   };
 
-  private final Button.OnClickListener encodePhone = new Button.OnClickListener() {
+  private final View.OnClickListener encodePhone = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       encodeBarcode("PHONE_TYPE", "2125551212");
     }
   };
 
-  private final Button.OnClickListener encodeSMS = new Button.OnClickListener() {
+  private final View.OnClickListener encodeSMS = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       encodeBarcode("SMS_TYPE", "2125551212");
     }
   };
 
-  private final Button.OnClickListener encodeContact = new Button.OnClickListener() {
+  private final View.OnClickListener encodeContact = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       Bundle bundle = new Bundle();
@@ -213,7 +215,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener encodeLocation = new Button.OnClickListener() {
+  private final View.OnClickListener encodeLocation = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       Bundle bundle = new Bundle();
@@ -223,7 +225,7 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener encodeHiddenData = new Button.OnClickListener() {
+  private final View.OnClickListener encodeHiddenData = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
@@ -232,14 +234,14 @@ public final class ZXingTestActivity extends Activity {
     }
   };
 
-  private final Button.OnClickListener encodeBadData = new Button.OnClickListener() {
+  private final View.OnClickListener encodeBadData = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       encodeBarcode(null, "bar");
     }
   };
 
-  private final Button.OnClickListener shareViaBarcode = new Button.OnClickListener() {
+  private final View.OnClickListener shareViaBarcode = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
       startActivity(new Intent("com.google.zxing.client.android.SHARE"));
@@ -250,7 +252,7 @@ public final class ZXingTestActivity extends Activity {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(title);
     builder.setMessage(message);
-    builder.setPositiveButton("OK", null);
+    builder.setPositiveButton(R.string.ok_button, null);
     builder.show();
   }
 
@@ -265,7 +267,7 @@ public final class ZXingTestActivity extends Activity {
     integrator.shareText(data.toString(), type); // data.toString() isn't used
   }
 
-  private static String getFlattenedParams() {
+  private static CharSequence getFlattenedParams() {
     Camera camera = Camera.open();
     if (camera == null) {
       return null;
@@ -304,11 +306,13 @@ public final class ZXingTestActivity extends Activity {
     result.append("VERSION.RELEASE=").append(Build.VERSION.RELEASE).append('\n');
     result.append("VERSION.SDK_INT=").append(Build.VERSION.SDK_INT).append('\n');
 
-    String flattened = getFlattenedParams();
-    String[] params = flattened.split(";");
-    Arrays.sort(params);
-    for (String param : params) {
-      result.append(param).append('\n');
+    CharSequence flattened = getFlattenedParams();
+    if (flattened != null) {
+      String[] params = SEMICOLON.split(flattened);
+      Arrays.sort(params);
+      for (String param : params) {
+        result.append(param).append('\n');
+      }
     }
 
     String resultString = result.toString();
@@ -318,10 +322,10 @@ public final class ZXingTestActivity extends Activity {
   }
 
   private static void writeStats(String resultString) {
+    File cameraParamsFile = new File(Environment.getExternalStorageDirectory().getPath() + "/CameraParameters.txt");
     Writer out = null;
     try {
-      out = new OutputStreamWriter(new FileOutputStream(new File("/sdcard/CameraParameters.txt")), 
-                                   Charset.forName("UTF-8"));
+      out = new OutputStreamWriter(new FileOutputStream(cameraParamsFile), Charset.forName("UTF-8"));
       out.write(resultString);
     } catch (IOException e) {
       Log.e(TAG, "Cannot write parameters file ", e);

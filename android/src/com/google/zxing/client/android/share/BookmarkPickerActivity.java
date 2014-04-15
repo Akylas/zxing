@@ -43,24 +43,30 @@ public final class BookmarkPickerActivity extends ListActivity {
   static final int TITLE_COLUMN = 0;
   static final int URL_COLUMN = 1;
 
-  // Without this selection, we'd get all the history entries too
-  private static final String BOOKMARK_SELECTION = "bookmark = 1";
+  private static final String BOOKMARK_SELECTION = 
+      Browser.BookmarkColumns.BOOKMARK + " = 1 AND " + Browser.BookmarkColumns.URL + " IS NOT NULL";
 
-  private Cursor cursor = null;
+  private Cursor cursor;
 
   @Override
   protected void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-
     cursor = getContentResolver().query(Browser.BOOKMARKS_URI, BOOKMARK_PROJECTION,
         BOOKMARK_SELECTION, null, null);
     if (cursor == null) {
       Log.w(TAG, "No cursor returned for bookmark query");
       finish();
-    } else {
-      startManagingCursor(cursor);
-      setListAdapter(new BookmarkAdapter(this, cursor));
+      return;
     }
+    setListAdapter(new BookmarkAdapter(this, cursor));
+  }
+  
+  @Override
+  protected void onDestroy() {
+    if (cursor != null) {
+      cursor.close();
+    }
+    super.onDestroy();
   }
 
   @Override

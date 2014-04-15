@@ -16,10 +16,12 @@
 
 package com.google.zxing.client.android.encode;
 
+import android.graphics.Point;
 import android.view.Display;
 import android.view.MenuInflater;
 import android.view.WindowManager;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.FinishListener;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.client.android.R;
@@ -81,8 +83,13 @@ public final class EncodeActivity extends Activity {
     menuInflater.inflate(R.menu.encode, menu);
     boolean useVcard = qrCodeEncoder != null && qrCodeEncoder.isUseVCard();
     int encodeNameResource = useVcard ? R.string.menu_encode_mecard : R.string.menu_encode_vcard;
-    MenuItem encodeItem = menu.getItem(1);
+    MenuItem encodeItem = menu.findItem(R.id.menu_encode);
     encodeItem.setTitle(encodeNameResource);
+    Intent intent = getIntent();
+    if (intent != null) {
+      String type = intent.getStringExtra(Intents.Encode.TYPE);
+      encodeItem.setVisible(Contents.Type.CONTACT.equals(type));
+    }
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -98,6 +105,7 @@ public final class EncodeActivity extends Activity {
           return false;
         }
         intent.putExtra(USE_VCARD_KEY, !qrCodeEncoder.isUseVCard());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
         return true;
@@ -180,8 +188,10 @@ public final class EncodeActivity extends Activity {
     // This assumes the view is full screen, which is a good assumption
     WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
     Display display = manager.getDefaultDisplay();
-    int width = display.getWidth();
-    int height = display.getHeight();
+    Point displaySize = new Point();
+    display.getSize(displaySize);
+    int width = displaySize.x;
+    int height = displaySize.y;
     int smallerDimension = width < height ? width : height;
     smallerDimension = smallerDimension * 7 / 8;
 

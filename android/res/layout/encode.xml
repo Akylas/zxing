@@ -16,18 +16,21 @@
  -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:fillViewport="true"
               android:background="@color/encode_view"
               android:orientation="vertical"
-              android:gravity="center">
+              android:gravity="center"
+              tools:ignore="Overdraw">
 
   <ImageView android:id="@+id/image_view"
              android:layout_width="fill_parent"
              android:layout_height="wrap_content"
              android:layout_gravity="center_horizontal"
-             android:scaleType="center"/>
+             android:scaleType="center"
+             tools:ignore="ContentDescription"/>
 
   <ScrollView android:layout_width="fill_parent"
               android:layout_height="wrap_content"
@@ -40,10 +43,10 @@
               android:layout_gravity="center_horizontal"
               android:gravity="center"
               android:textColor="@color/contents_text"
-              android:textSize="18sp"
-              android:paddingBottom="8dip"
-              android:paddingLeft="8dip"
-              android:paddingRight="8dip"/>
+              android:paddingBottom="@dimen/standard_padding"
+              android:paddingLeft="@dimen/standard_padding"
+              android:paddingRight="@dimen/standard_padding"
+              android:textIsSelectable="true"/>
 
   </ScrollView>
 

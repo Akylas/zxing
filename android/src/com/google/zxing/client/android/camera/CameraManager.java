@@ -24,7 +24,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.client.android.camera.open.OpenCameraManager;
+import com.google.zxing.client.android.camera.open.OpenCameraInterface;
 
 import java.io.IOException;
 
@@ -41,8 +41,8 @@ public final class CameraManager {
 
   private static final int MIN_FRAME_WIDTH = 240;
   private static final int MIN_FRAME_HEIGHT = 240;
-  private static final int MAX_FRAME_WIDTH = 600;
-  private static final int MAX_FRAME_HEIGHT = 400;
+  private static final int MAX_FRAME_WIDTH = 1200; // = 5/8 * 1920
+  private static final int MAX_FRAME_HEIGHT = 675; // = 5/8 * 1080
 
   private final Context context;
   private final CameraConfigurationManager configManager;
@@ -75,7 +75,7 @@ public final class CameraManager {
   public synchronized void openDriver(SurfaceHolder holder) throws IOException {
     Camera theCamera = camera;
     if (theCamera == null) {
-      theCamera = new OpenCameraManager().build().open();
+      theCamera = OpenCameraInterface.open();
       if (theCamera == null) {
         throw new IOException();
       }
@@ -92,7 +92,29 @@ public final class CameraManager {
         requestedFramingRectHeight = 0;
       }
     }
-    configManager.setDesiredCameraParameters(theCamera);
+
+    Camera.Parameters parameters = theCamera.getParameters();
+    String parametersFlattened = parameters == null ? null : parameters.flatten(); // Save these, temporarily
+    try {
+      configManager.setDesiredCameraParameters(theCamera, false);
+    } catch (RuntimeException re) {
+      // Driver failed
+      Log.w(TAG, "Camera rejected parameters. Setting only minimal safe-mode parameters");
+      Log.i(TAG, "Resetting to saved camera params: " + parametersFlattened);
+      // Reset:
+      if (parametersFlattened != null) {
+        parameters = theCamera.getParameters();
+        parameters.unflatten(parametersFlattened);
+        try {
+          theCamera.setParameters(parameters);
+          configManager.setDesiredCameraParameters(theCamera, true);
+        } catch (RuntimeException re2) {
+          // Well, darn. Give up
+          Log.w(TAG, "Camera rejected even safe-mode parameters! No configuration");
+        }
+      }
+    }
+
   }
 
   public synchronized boolean isOpen() {
@@ -142,15 +164,19 @@ public final class CameraManager {
 
   /**
    * Convenience method for {@link com.google.zxing.client.android.CaptureActivity}
+   *
+   * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
    */
   public synchronized void setTorch(boolean newSetting) {
-    if (camera != null) {
-      if (autoFocusManager != null) {
-        autoFocusManager.stop();
-      }
-      configManager.setTorch(camera, newSetting);
-      if (autoFocusManager != null) {
-        autoFocusManager.start();
+    if (newSetting != configManager.getTorchState(camera)) {
+      if (camera != null) {
+        if (autoFocusManager != null) {
+          autoFocusManager.stop();
+        }
+        configManager.setTorch(camera, newSetting);
+        if (autoFocusManager != null) {
+          autoFocusManager.start();
+        }
       }
     }
   }
@@ -188,18 +214,10 @@ public final class CameraManager {
         // Called early, before init even finished
         return null;
       }
-      int width = screenResolution.x * 3 / 4;
-      if (width < MIN_FRAME_WIDTH) {
-        width = MIN_FRAME_WIDTH;
-      } else if (width > MAX_FRAME_WIDTH) {
-        width = MAX_FRAME_WIDTH;
-      }
-      int height = screenResolution.y * 3 / 4;
-      if (height < MIN_FRAME_HEIGHT) {
-        height = MIN_FRAME_HEIGHT;
-      } else if (height > MAX_FRAME_HEIGHT) {
-        height = MAX_FRAME_HEIGHT;
-      }
+
+      int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
+      int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
+
       int leftOffset = (screenResolution.x - width) / 2;
       int topOffset = (screenResolution.y - height) / 2;
       framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
@@ -207,10 +225,23 @@ public final class CameraManager {
     }
     return framingRect;
   }
+  
+  private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
+    int dim = 5 * resolution / 8; // Target 5/8 of each dimension
+    if (dim < hardMin) {
+      return hardMin;
+    }
+    if (dim > hardMax) {
+      return hardMax;
+    }
+    return dim;
+  }
 
   /**
    * Like {@link #getFramingRect} but coordinates are in terms of the preview frame,
    * not UI / screen.
+   *
+   * @return {@link Rect} expressing barcode scan area in terms of the preview size
    */
   public synchronized Rect getFramingRectInPreview() {
     if (framingRectInPreview == null) {

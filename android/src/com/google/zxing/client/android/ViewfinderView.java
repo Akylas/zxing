@@ -19,6 +19,7 @@ package com.google.zxing.client.android;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -50,7 +51,6 @@ public final class ViewfinderView extends View {
   private Bitmap resultBitmap;
   private final int maskColor;
   private final int resultColor;
-  private final int frameColor;
   private final int laserColor;
   private final int resultPointColor;
   private int scannerAlpha;
@@ -66,11 +66,10 @@ public final class ViewfinderView extends View {
     Resources resources = getResources();
     maskColor = resources.getColor(R.color.viewfinder_mask);
     resultColor = resources.getColor(R.color.result_view);
-    frameColor = resources.getColor(R.color.viewfinder_frame);
     laserColor = resources.getColor(R.color.viewfinder_laser);
     resultPointColor = resources.getColor(R.color.possible_result_points);
     scannerAlpha = 0;
-    possibleResultPoints = new ArrayList<ResultPoint>(5);
+    possibleResultPoints = new ArrayList<>(5);
     lastPossibleResultPoints = null;
   }
 
@@ -78,13 +77,15 @@ public final class ViewfinderView extends View {
     this.cameraManager = cameraManager;
   }
 
+  @SuppressLint("DrawAllocation")
   @Override
   public void onDraw(Canvas canvas) {
     if (cameraManager == null) {
       return; // not ready yet, early draw before done configuring
     }
     Rect frame = cameraManager.getFramingRect();
-    if (frame == null) {
+    Rect previewFrame = cameraManager.getFramingRectInPreview();    
+    if (frame == null || previewFrame == null) {
       return;
     }
     int width = canvas.getWidth();
@@ -103,13 +104,6 @@ public final class ViewfinderView extends View {
       canvas.drawBitmap(resultBitmap, null, frame, paint);
     } else {
 
-      // Draw a two pixel solid black border inside the framing rect
-      paint.setColor(frameColor);
-      canvas.drawRect(frame.left, frame.top, frame.right + 1, frame.top + 2, paint);
-      canvas.drawRect(frame.left, frame.top + 2, frame.left + 2, frame.bottom - 1, paint);
-      canvas.drawRect(frame.right - 1, frame.top, frame.right + 1, frame.bottom - 1, paint);
-      canvas.drawRect(frame.left, frame.bottom - 1, frame.right + 1, frame.bottom + 1, paint);
-
       // Draw a red "laser scanner" line through the middle to show decoding is active
       paint.setColor(laserColor);
       paint.setAlpha(SCANNER_ALPHA[scannerAlpha]);
@@ -117,7 +111,6 @@ public final class ViewfinderView extends View {
       int middle = frame.height() / 2 + frame.top;
       canvas.drawRect(frame.left + 2, middle - 1, frame.right - 1, middle + 2, paint);
       
-      Rect previewFrame = cameraManager.getFramingRectInPreview();
       float scaleX = frame.width() / (float) previewFrame.width();
       float scaleY = frame.height() / (float) previewFrame.height();
 
@@ -128,7 +121,7 @@ public final class ViewfinderView extends View {
       if (currentPossible.isEmpty()) {
         lastPossibleResultPoints = null;
       } else {
-        possibleResultPoints = new ArrayList<ResultPoint>(5);
+        possibleResultPoints = new ArrayList<>(5);
         lastPossibleResultPoints = currentPossible;
         paint.setAlpha(CURRENT_POINT_OPACITY);
         paint.setColor(resultPointColor);
