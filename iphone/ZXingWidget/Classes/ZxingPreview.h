@@ -11,7 +11,6 @@
 
 @interface ZxingPreview : UIView
 {
-    UIInterfaceOrientation interfaceOrientation;
     NSTimeInterval animationDuration;
     AVCaptureVideoPreviewLayer *_prevLayer;
     CGAffineTransform previewTransform;
@@ -20,6 +19,7 @@
 // additional transform applied to video preview.
 // (NB *not* applied to scan crop)
 @property (nonatomic) CGAffineTransform previewTransform;
+@property (nonatomic) UIInterfaceOrientation interfaceOrientation;
 
 // compensate for device/camera/interface orientation
 - (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) orient

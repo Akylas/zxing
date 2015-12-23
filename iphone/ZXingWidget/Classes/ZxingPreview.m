@@ -11,13 +11,15 @@
 @implementation ZxingPreview
 @synthesize prevLayer = _prevLayer;
 @synthesize previewTransform;
+@synthesize interfaceOrientation;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+        
         // Initialization code
-        interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        self.interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     }
     return self;
 }
@@ -45,6 +47,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     CGRect bounds = self.bounds;
     if(!bounds.size.width || !bounds.size.height)
         return;
+    
     
     // orient view bounds to match camera image
     CGSize psize;
@@ -85,10 +88,9 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     // center preview in view
     self.prevLayer.position = CGPointMake(bounds.size.width / 2,
                                           bounds.size.height / 2);
-    
-    CGFloat angle = rotationForInterfaceOrientation(interfaceOrientation);
-    CATransform3D xform =
-    CATransform3DMakeAffineTransform(previewTransform);
+
+    CGFloat angle = rotationForInterfaceOrientation(self.interfaceOrientation);
+    CATransform3D xform = CATransform3DMakeAffineTransform(previewTransform);
     self.prevLayer.transform = CATransform3DRotate(xform, angle, 0, 0, 1);
     //    self.captureView.transform = transform;
     //    if (!sameOrient)
@@ -148,13 +150,15 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
 - (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) orient
                                  duration: (NSTimeInterval) duration
 {
-    if(interfaceOrientation != orient) {
+    if(self.interfaceOrientation != orient) {
 #ifdef DEBUG
         DLog(@"orient=%d #%g", orient, duration);
 #endif
-        interfaceOrientation = orient;
+        self.interfaceOrientation = orient;
         animationDuration = duration;
     }
 }
+
+
 
 @end
