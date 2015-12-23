@@ -33,26 +33,26 @@ namespace zxing {
 		}
 		//TODO: see if any of the other files in the qrcode tree need tryHarder
 		Ref<Result> QRCodeReader::decode(Ref<BinaryBitmap> image, DecodeHints hints) {
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "decoding image " << image.object_ << ":\n" << flush;
 #endif
 			
 			Detector detector(image->getBlackMatrix());
 			
 			
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "(1) created detector " << &detector << "\n" << flush;
 #endif
 			
 			Ref<DetectorResult> detectorResult(detector.detect(hints));
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "(2) detected, have detectorResult " << detectorResult.object_ << "\n" << flush;
 #endif
 			
 			std::vector<Ref<ResultPoint> > points(detectorResult->getPoints());
 			
 			
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "(3) extracted points " << &points << "\n" << flush;
 			cout << "found " << points.size() << " points:\n";
 			for (size_t i = 0; i < points.size(); i++) {
@@ -63,13 +63,13 @@ namespace zxing {
 #endif
 			
 			Ref<DecoderResult> decoderResult(decoder_.decode(detectorResult->getBits()));
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "(4) decoded, have decoderResult " << decoderResult.object_ << "\n" << flush;
 #endif
 			
 			Ref<Result> result(
 							   new Result(decoderResult->getText(), decoderResult->getRawBytes(), points, BarcodeFormat_QR_CODE));
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
 			cout << "(5) created result " << result.object_ << ", returning\n" << flush;
 #endif
 			

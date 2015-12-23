@@ -42,7 +42,7 @@ void ReedSolomonDecoder::decode(ArrayRef<int> received, int twoS) {
 
 
 /*
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
   cout << "decoding with poly " << *poly << endl;
 #endif
 */
@@ -50,7 +50,7 @@ void ReedSolomonDecoder::decode(ArrayRef<int> received, int twoS) {
   ArrayRef<int> syndromeCoefficients(new Array<int> (twoS));
 
 
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
   cout << "syndromeCoefficients array = " <<
       syndromeCoefficients.array_ << endl;
 #endif
@@ -137,7 +137,7 @@ vector<Ref<GenericGFPoly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<Generi
 
 
 /*
-#ifdef DEBUG
+#ifdef ZXING_DEBUG
   cout << "t = " << *t << endl;
   cout << "r = " << *r << "\n";
   cout << "sigma = " << *sigma << endl;

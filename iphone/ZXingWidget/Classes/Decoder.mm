@@ -82,27 +82,27 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
 #define SUBSET_SIZE 360
 - (void) prepareSubset {
   CGSize size = [image size];
-#ifdef DEBUG
-  NSLog(@"decoding: image is (%.1f x %.1f), cropRect is (%.1f,%.1f)x(%.1f,%.1f)", size.width, size.height,
+#ifdef ZXING_DEBUG
+  DLog(@"decoding: image is (%.1f x %.1f), cropRect is (%.1f,%.1f)x(%.1f,%.1f)", size.width, size.height,
         cropRect.origin.x, cropRect.origin.y, cropRect.size.width, cropRect.size.height);
 #endif
   float scale = fminf(1.0f, fmaxf(SUBSET_SIZE / cropRect.size.width, SUBSET_SIZE / cropRect.size.height));
   CGPoint offset = CGPointMake(-cropRect.origin.x, -cropRect.origin.y);
-#ifdef DEBUG
-  NSLog(@"  offset = (%.1f, %.1f), scale = %.3f", offset.x, offset.y, scale);
+#ifdef ZXING_DEBUG
+  DLog(@"  offset = (%.1f, %.1f), scale = %.3f", offset.x, offset.y, scale);
 #endif
   
   subsetWidth = cropRect.size.width * scale;
   subsetHeight = cropRect.size.height * scale;
   
   subsetBytesPerRow = ((subsetWidth + 0xf) >> 4) << 4;
-#ifdef DEBUG
-  NSLog(@"decoding: image to decode is (%d x %d) (%d bytes/row)", subsetWidth, subsetHeight, subsetBytesPerRow);
+#ifdef ZXING_DEBUG
+  DLog(@"decoding: image to decode is (%d x %d) (%d bytes/row)", (int)subsetWidth, (int)subsetHeight, (int)subsetBytesPerRow);
 #endif
   
   subsetData = (unsigned char *)malloc(subsetBytesPerRow * subsetHeight);
-#ifdef DEBUG
-  NSLog(@"allocated %d bytes of memory", subsetBytesPerRow * subsetHeight);
+#ifdef ZXING_DEBUG
+  DLog(@"allocated %d bytes of memory", (int)subsetBytesPerRow * (int)subsetHeight);
 #endif
   
   CGColorSpaceRef grayColorSpace = CGColorSpaceCreateDeviceGray();
@@ -118,45 +118,86 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
   CGContextTranslateCTM(ctx, 0.0, subsetHeight);
   CGContextScaleCTM(ctx, 1.0, -1.0);  
   
-#ifdef DEBUG
-  NSLog(@"created %dx%d bitmap context", subsetWidth, subsetHeight);
+#ifdef ZXING_DEBUG
+  DLog(@"created %dx%d bitmap context", (int)subsetWidth, (int)subsetHeight);
 #endif
   
   UIGraphicsPushContext(ctx);
   CGRect rect = CGRectMake(offset.x * scale, offset.y * scale, scale * size.width, scale * size.height);
-#ifdef DEBUG
-  NSLog(@"rect for image = (%.1f,%.1f)x(%.1f,%.1f)", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+#ifdef ZXING_DEBUG
+  DLog(@"rect for image = (%.1f,%.1f)x(%.1f,%.1f)", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 #endif
   [image drawInRect:rect];
   UIGraphicsPopContext();
   
-#ifdef DEBUG
-  NSLog(@"drew image into %d(%d)x%d  bitmap context", subsetWidth, subsetBytesPerRow, subsetHeight);
+#ifdef ZXING_DEBUG
+  DLog(@"drew image into %d(%d)x%d  bitmap context", (int)subsetWidth, (int)subsetBytesPerRow, (int)subsetHeight);
 #endif
   CGContextFlush(ctx);
-#ifdef DEBUG
-  NSLog(@"flushed context");
+#ifdef ZXING_DEBUG
+  DLog(@"flushed context");
 #endif
     
   CGImageRef subsetImageRef = CGBitmapContextCreateImage(ctx);
-#ifdef DEBUG
-  NSLog(@"created CGImage from context");
+#ifdef ZXING_DEBUG
+  DLog(@"created CGImage from context");
 #endif
   
   self.subsetImage = [UIImage imageWithCGImage:subsetImageRef];
   CGImageRelease(subsetImageRef);
   
   CGContextRelease(ctx);
-#ifdef DEBUG
-  NSLog(@"released context");  
+#ifdef ZXING_DEBUG
+  DLog(@"released context");  
 #endif
-}  
+}
+
+- (CGPoint)rotatePoint:(CGPoint)point withinRect:(CGRect)rect withAngle: (CGFloat)angle
+{
+    CGPoint center;
+    center.x = rect.size.width/2;
+    center.y = rect.size.height/2;
+    float x = point.x - center.x;
+    float y = point.y - center.y;
+    //    int rotation = 90;
+    int modAngle = ((int)angle % 360);
+    switch(modAngle) {
+        case 90: // 90
+            point.x = -y;
+            point.y = x;
+            point.x += center.y;
+            point.y += center.x;
+            break;
+        case 180: //180 degrees
+            point.x = -x;
+            point.y = -y;
+            point.x += center.x;
+            point.y += center.y;
+            break;
+        case 270: //-90 degrees
+            point.x = y;
+            point.y = -x;
+            point.x += center.y;
+            point.y += center.x;
+            break;
+        case 0: //0 degrees
+            point.x = x;
+            point.y = y;
+            point.x += center.x;
+            point.y += center.y;
+            break;
+    }
+    
+    return point;
+}
 
 - (BOOL)decode {
   NSAutoreleasePool* mainpool = [[NSAutoreleasePool alloc] init];
   TwoDDecoderResult *decoderResult = nil;
   BOOL returnCode = NO;
   { 
+    float rotation;
+    rotation = 0;
     //NSSet *formatReaders = [FormatReader formatReaders];
     NSSet *formatReaders = self.readers;
     Ref<LuminanceSource> source 
@@ -166,10 +207,10 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
     source = 0;
     Ref<BinaryBitmap> grayImage (new BinaryBitmap(binarizer));
     binarizer = 0;
-#ifdef DEBUG
-    NSLog(@"created GreyscaleLuminanceSource(%p,%d,%d,%d,%d,%d,%d)",
-          subsetData, subsetBytesPerRow, subsetHeight, 0, 0, subsetWidth, subsetHeight);
-    NSLog(@"grayImage count = %d", grayImage->count());
+#ifdef ZXING_DEBUG
+    DLog(@"created GreyscaleLuminanceSource(%p,%d,%d,%d,%d,%d,%d)",
+          subsetData, (int)subsetBytesPerRow, (int)subsetHeight, 0, 0, (int)subsetWidth, (int)subsetHeight);
+    DLog(@"grayImage count = %d", grayImage->count());
 #endif
     
 #ifdef TRY_ROTATIONS
@@ -180,14 +221,14 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
         NSMutableArray *points = nil;
         NSString *resultString = nil;
         try {
-#ifdef DEBUG
-          NSLog(@"decoding gray image");
+#ifdef ZXING_DEBUG
+          DLog(@"decoding gray image");
 #endif  
           ResultPointCallback* callback_pointer(new ZXingWidgetControllerCallback(self));
           Ref<ResultPointCallback> callback(callback_pointer);
           Ref<Result> result([reader decode:grayImage andCallback:callback]);
-#ifdef DEBUG
-          NSLog(@"gray image decoded");
+#ifdef ZXING_DEBUG
+          DLog(@"gray image decoded");
 #endif
           
           Ref<String> resultText(result->getText());
@@ -195,27 +236,44 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
           const std::vector<Ref<ResultPoint> > &resultPoints = result->getResultPoints();
           points = [[NSMutableArray alloc ] initWithCapacity:resultPoints.size()];
           
+            float scale = subsetWidth / cropRect.size.width;
+            
+            int iRotation = (-rotation + 360.0f);
+            CGRect rect;
+            if ((iRotation % 180) == 0)
+                rect = CGRectMake(0.0f, 0.0f, grayImage->getWidth(), grayImage->getHeight());
+            else
+                rect = CGRectMake(0.0f, 0.0f, grayImage->getHeight(), grayImage->getWidth());
+            //Points are only usable when no cropRect as of the subset
           for (size_t i = 0; i < resultPoints.size(); i++) {
             const Ref<ResultPoint> &rp = resultPoints[i];
-            CGPoint p = CGPointMake(rp->getX(), rp->getY());
+            //first let s put the coordinate system back into place
+              CGPoint p = CGPointMake(grayImage->getWidth() - rp->getY() / scale, rp->getX() / scale);
+//              NSLog(@"point %@", NSStringFromCGPoint(p));
+//              CGPoint p = CGPointMake(( rect.size.width - rp->getX()) / scale, ( rect.size.height - rp->getY() / scale));
+              //first let s compense the rotation applied to the gray image
+              p = [self rotatePoint:p withinRect:rect withAngle:iRotation];
+              
+//              p = CGPointMake(p.x, grayImage->getHeight() - p.y);
             [points addObject:[NSValue valueWithCGPoint:p]];
           }
           
           resultString = [[NSString alloc] initWithCString:cString encoding:NSUTF8StringEncoding];
           if (decoderResult) [decoderResult release];
           decoderResult = [[TwoDDecoderResult alloc] initWithText:resultString points:points];
+//            break;
         } catch (ReaderException &rex) {
-#ifdef DEBUG
-          NSLog(@"failed to decode, caught ReaderException '%s'",
+#ifdef ZXING_DEBUG
+          DLog(@"failed to decode, caught ReaderException '%s'",
                 rex.what());
 #endif
         } catch (IllegalArgumentException &iex) {
-#ifdef DEBUG
-          NSLog(@"failed to decode, caught IllegalArgumentException '%s'", 
+#ifdef ZXING_DEBUG
+          DLog(@"failed to decode, caught IllegalArgumentException '%s'", 
                 iex.what());
 #endif
         } catch (...) {
-          NSLog(@"Caught unknown exception!");
+          DLog(@"Caught unknown exception!");
         }
         [resultString release];
         [points release];
@@ -224,14 +282,16 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
       
 #ifdef TRY_ROTATIONS
       if (!decoderResult) {
-#ifdef DEBUG
-        NSLog(@"rotating gray image");
+#ifdef ZXING_DEBUG
+        DLog(@"rotating gray image");
 #endif
+        rotation -= 90.0f;
         grayImage = grayImage->rotateCounterClockwise();
-#ifdef DEBUG
-        NSLog(@"gray image rotated");
+#ifdef ZXING_DEBUG
+        DLog(@"gray image rotated");
 #endif
       }
+//      else break; //we found one
     }
 #endif
 	  
@@ -244,6 +304,7 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
         
 
     if (decoderResult) {
+        DLog(@"found in image with rotation %f", rotation);
       [self performSelectorOnMainThread:@selector(didDecodeImage:)
                              withObject:[decoderResult copy]
                           waitUntilDone:NO];
@@ -257,8 +318,8 @@ ZXingWidgetControllerCallback(Decoder* _decoder) : decoder(_decoder) {}
   }
   
   
-#ifdef DEBUG
-  NSLog(@"finished decoding.");
+#ifdef ZXING_DEBUG
+  DLog(@"finished decoding.");
 #endif
   [mainpool release];
 

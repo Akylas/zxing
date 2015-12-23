@@ -161,7 +161,7 @@
   if ([self soundToPlay] != nil) {
     OSStatus error = AudioServicesCreateSystemSoundID((CFURLRef)[self soundToPlay], &beepSound);
     if (error != kAudioServicesNoError) {
-      NSLog(@"Problem loading nearSound.caf");
+      DLog(@"Problem loading nearSound.caf");
     }
   }
 }
@@ -208,7 +208,7 @@
                                  duration: (NSTimeInterval) duration
 {
 #ifdef DEBUG
-    NLog(@"willRotate: orient=%d #%g", orient, duration);
+    DLog(@"willRotate: orient=%d #%g", orient, duration);
 #endif
     rotating = YES;
     if(preview)
@@ -220,7 +220,7 @@
                                           duration: (NSTimeInterval) duration
 {
 #ifdef DEBUG
-    NLog(@"willAnimateRotation: orient=%d #%g", orient, duration);
+    DLog(@"willAnimateRotation: orient=%d #%g", orient, duration);
 #endif
     if(preview)
         [preview setNeedsLayout];
@@ -231,7 +231,7 @@
 - (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) orient
 {
 #ifdef DEBUG
-    NLog(@"didRotate(%d): orient=%d", rotating, orient);
+    DLog(@"didRotate(%d): orient=%d", rotating, orient);
 #endif
     if(!rotating && preview) {
         // work around UITabBarController bug: willRotate is not called
@@ -323,8 +323,8 @@
 // DecoderDelegate methods
 
 - (void)decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset{
-#ifdef DEBUG
-  NSLog(@"DecoderViewController MessageWhileDecodingWithDimensions: Decoding image (%.0fx%.0f) ...", image.size.width, image.size.height);
+#ifdef ZXING_DEBUG
+  DLog(@"DecoderViewController MessageWhileDecodingWithDimensions: Decoding image (%.0fx%.0f) ...", image.size.width, image.size.height);
 #endif
 }
 
@@ -338,8 +338,8 @@
   if (beepSound != (SystemSoundID)-1) {
     AudioServicesPlaySystemSound(beepSound);
   }
-#ifdef DEBUG
-  NSLog(@"result string = %@", resultString);
+#ifdef ZXING_DEBUG
+  DLog(@"result string = %@", resultString);
 #endif
 }
 
@@ -378,11 +378,11 @@
 
 /*
 - (void)stopPreview:(NSNotification*)notification {
-  // NSLog(@"stop preview");
+  // DLog(@"stop preview");
 }
 
 - (void)notification:(NSNotification*)notification {
-  // NSLog(@"notification %@", notification.name);
+  // DLog(@"notification %@", notification.name);
 }
 */
 
@@ -431,11 +431,11 @@ static bool isIPad() {
       isIPad() && 
       [inputDevice
         supportsAVCaptureSessionPreset:AVCaptureSessionPresetiFrame960x540]) {
-    // NSLog(@"960");
+    // DLog(@"960");
     preset = AVCaptureSessionPresetiFrame960x540;
   }
   if (!preset) {
-    // NSLog(@"MED");
+    // DLog(@"MED");
     preset = AVCaptureSessionPresetMedium;
   }
   self.captureSession.sessionPreset = preset;

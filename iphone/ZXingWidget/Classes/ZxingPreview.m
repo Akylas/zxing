@@ -150,7 +150,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
 {
     if(interfaceOrientation != orient) {
 #ifdef DEBUG
-        NLog(@"orient=%d #%g", orient, duration);
+        DLog(@"orient=%d #%g", orient, duration);
 #endif
         interfaceOrientation = orient;
         animationDuration = duration;

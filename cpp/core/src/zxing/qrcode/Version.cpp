@@ -197,7 +197,7 @@ Ref<BitMatrix> Version::buildFunctionPattern() {
   }
 
 
-  //#ifdef DEBUG
+  //#ifdef ZXING_DEBUG
   //	cout << "version " << versionNumber_ << " built function pattern:\n";
   //	cout << *functionPattern;
   //#endif

@@ -18,7 +18,7 @@
 }
 
 - (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback {
-    //NSLog(@"no callbacks supported for aztec");
+    //DLog(@"no callbacks supported for aztec");
     return [self decode:grayImage];
 }
 
