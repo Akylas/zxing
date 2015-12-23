@@ -154,10 +154,11 @@
 		3B81AAF9120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B81AAF7120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h */; };
 		AA747D9F0F9514B9006C5449 /* ZXingWidget_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* ZXingWidget_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
-		D51BF4D714D1B2E20089A309 /* EAN8Reader.h in Headers */ = {isa = PBXBuildFile; fileRef = D51BF4D514D1B2E10089A309 /* EAN8Reader.h */; };
-		D51BF4D814D1B2E20089A309 /* EAN8Reader.mm in Sources */ = {isa = PBXBuildFile; fileRef = D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */; };
-		D594813C14B1A56C004729E4 /* ZxingPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = D594813A14B1A56C004729E4 /* ZxingPreview.h */; };
-		D594813D14B1A56C004729E4 /* ZxingPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = D594813B14B1A56C004729E4 /* ZxingPreview.m */; };
+		D5817FAB15CAC93000610AEC /* ZxingPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = D594813B14B1A56C004729E4 /* ZxingPreview.m */; };
+		D5817FB715CACB9500610AEC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D5817FAC15CAC9E800610AEC /* libiconv.dylib */; };
+		D5CF9E4315D3ABD700680102 /* EAN13Reader.h in Headers */ = {isa = PBXBuildFile; fileRef = D5CF9E4115D3ABD700680102 /* EAN13Reader.h */; };
+		D5CF9E4415D3ABD700680102 /* EAN13Reader.mm in Sources */ = {isa = PBXBuildFile; fileRef = D5CF9E4215D3ABD700680102 /* EAN13Reader.mm */; };
+		D5CF9E4D15D3ADC300680102 /* EAN8Reader.mm in Sources */ = {isa = PBXBuildFile; fileRef = D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */; };
 		E534594311987396000CB77F /* BarcodeFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E53458B511987396000CB77F /* BarcodeFormat.cpp */; };
 		E534594411987396000CB77F /* BarcodeFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = E53458B611987396000CB77F /* BarcodeFormat.h */; };
 		E534594511987396000CB77F /* Binarizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E53458B711987396000CB77F /* Binarizer.cpp */; };
@@ -451,8 +452,11 @@
 		D2AAC07E0554694100DB518D /* libZXingWidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZXingWidget.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D51BF4D514D1B2E10089A309 /* EAN8Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAN8Reader.h; path = Classes/EAN8Reader.h; sourceTree = "<group>"; };
 		D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAN8Reader.mm; path = Classes/EAN8Reader.mm; sourceTree = "<group>"; };
+		D5817FAC15CAC9E800610AEC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		D594813A14B1A56C004729E4 /* ZxingPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZxingPreview.h; path = Classes/ZxingPreview.h; sourceTree = "<group>"; };
 		D594813B14B1A56C004729E4 /* ZxingPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZxingPreview.m; path = Classes/ZxingPreview.m; sourceTree = "<group>"; };
+		D5CF9E4115D3ABD700680102 /* EAN13Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAN13Reader.h; path = Classes/EAN13Reader.h; sourceTree = "<group>"; };
+		D5CF9E4215D3ABD700680102 /* EAN13Reader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAN13Reader.mm; path = Classes/EAN13Reader.mm; sourceTree = "<group>"; };
 		E53458B511987396000CB77F /* BarcodeFormat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BarcodeFormat.cpp; sourceTree = "<group>"; };
 		E53458B611987396000CB77F /* BarcodeFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BarcodeFormat.h; sourceTree = "<group>"; };
 		E53458B711987396000CB77F /* Binarizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Binarizer.cpp; sourceTree = "<group>"; };
@@ -607,6 +611,7 @@
 				E53459CB119873F3000CB77F /* UIKit.framework in Frameworks */,
 				E5345A661198792F000CB77F /* AudioToolbox.framework in Frameworks */,
 				E5345AA31198859A000CB77F /* CoreGraphics.framework in Frameworks */,
+				D5817FB715CACB9500610AEC /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,6 +644,7 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D5817FAC15CAC9E800610AEC /* libiconv.dylib */,
 				1D60391813DF7780006F4B51 /* AddressBook.framework */,
 				1D60391E13DF778C006F4B51 /* AddressBookUI.framework */,
 				1D6040C413E3393B006F4B51 /* AVFoundation.framework */,
@@ -662,6 +668,8 @@
 				1DFA090B13CE1A3900599044 /* CBarcodeFormat.mm */,
 				1F3DB0F511C61080009C581B /* DataMatrixReader.h */,
 				1F3DB0F611C61080009C581B /* DataMatrixReader.mm */,
+				D5CF9E4115D3ABD700680102 /* EAN13Reader.h */,
+				D5CF9E4215D3ABD700680102 /* EAN13Reader.mm */,
 				D51BF4D514D1B2E10089A309 /* EAN8Reader.h */,
 				D51BF4D614D1B2E10089A309 /* EAN8Reader.mm */,
 				1F3DB0F711C61080009C581B /* MultiFormatOneDReader.h */,
@@ -1223,6 +1231,7 @@
 				3B248F9314EF3A980065F0DA /* Decoder.h in Headers */,
 				3B248F9514EF3A980065F0DA /* Detector.h in Headers */,
 				3B248F9814EF3AF80065F0DA /* AztecReader.h in Headers */,
+				D5CF9E4315D3ABD700680102 /* EAN13Reader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1470,6 +1479,9 @@
 				3B248F9214EF3A980065F0DA /* Decoder.cpp in Sources */,
 				3B248F9414EF3A980065F0DA /* Detector.cpp in Sources */,
 				3B248F9914EF3AF80065F0DA /* AztecReader.mm in Sources */,
+				D5817FAB15CAC93000610AEC /* ZxingPreview.m in Sources */,
+				D5CF9E4415D3ABD700680102 /* EAN13Reader.mm in Sources */,
+				D5CF9E4D15D3ADC300680102 /* EAN8Reader.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1542,6 +1554,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = (
+					armv7,
+					armv6,
+					armv7s,
+				);
+				"ARCHS[sdk=*]" = (
+					armv7,
+					armv6,
+					armv7s,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				EXPORTED_SYMBOLS_FILE = exportList;
@@ -1556,7 +1579,6 @@
 				LD_GENERATE_MAP_FILE = YES;
 				LD_OPENMP_FLAGS = "-fopenmp";
 				MACH_O_TYPE = staticlib;
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-M",
@@ -1565,6 +1587,12 @@
 				PRODUCT_NAME = ZXingWidget;
 				SEPARATE_STRIP = NO;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s i386 armv6";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Debug;
 		};
@@ -1572,6 +1600,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7s,
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=*]" = (
+					armv7s,
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ZXingWidget_Prefix.pch;
@@ -1581,6 +1620,12 @@
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = ZXingWidget;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s i386 armv6";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Release;
 		};
@@ -1595,7 +1640,6 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = NO;
-				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../cpp/core/src;
@@ -1603,7 +1647,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = "armv6 armv7 i386";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -1623,14 +1667,13 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = c99;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = NO;
-				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../cpp/core/src;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = "armv6 armv7 i386";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
