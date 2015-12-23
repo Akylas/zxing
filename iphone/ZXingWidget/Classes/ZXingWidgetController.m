@@ -54,7 +54,7 @@
 @synthesize oneDMode, showCancel, showLicense, isStatusBarHidden;
 @synthesize readers;
 @synthesize supportedOrientationsMask;
-
+@synthesize cropRect = _cropRect;
 
 - (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode {
   
@@ -172,7 +172,7 @@
 //  if (!isStatusBarHidden)
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
-  decoding = YES;
+    decoding = YES;
 
 //    self.captureView.backgroundColor = [UIColor redColor];
 //    self.captureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -186,8 +186,8 @@
  
     [self initCapture];
     
-  [overlayView setPoints:nil];
-  wasCancelled = NO;
+    [overlayView setPoints:nil];
+    wasCancelled = NO;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -199,10 +199,10 @@
   [self stopCapture];
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) orient
-{
-    return((supportedOrientationsMask >> orient) & 1);
-}
+//- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) orient
+//{
+//    return YES;
+//}
 
 - (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) orient
                                  duration: (NSTimeInterval) duration
@@ -228,6 +228,18 @@
         [overlayView setNeedsLayout];
 }
 
+
+// utility routing used during image capture to set up capture orientation
+- (AVCaptureVideoOrientation)avOrientationForDeviceOrientation:(UIDeviceOrientation)deviceOrientation
+{
+    AVCaptureVideoOrientation videoRot = deviceOrientation;
+    if ( deviceOrientation == UIDeviceOrientationLandscapeLeft )
+        videoRot = AVCaptureVideoOrientationLandscapeRight;
+    else if ( deviceOrientation == UIDeviceOrientationLandscapeRight )
+        videoRot = AVCaptureVideoOrientationLandscapeLeft;
+    return videoRot;
+}
+
 - (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) orient
 {
 #ifdef DEBUG
@@ -243,6 +255,7 @@
     if(overlayView)
         [overlayView setNeedsLayout];
     rotating = NO;
+    [self.preview.prevLayer setOrientation:[self avOrientationForDeviceOrientation:orient] ];
 }
 
 - (CGImageRef)CGImageRotated90:(CGImageRef)imgRef
@@ -386,6 +399,11 @@
 }
 */
 
+-(void)setCropRect:(CGRect)cropRect {
+    _cropRect = cropRect;
+    overlayView.cropRect = _cropRect;
+}
+
 #pragma mark - 
 #pragma mark AVFoundation
 
@@ -420,7 +438,7 @@ static bool isIPad() {
   captureOutput.alwaysDiscardsLateVideoFrames = YES; 
   [captureOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
   NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
-  NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+  NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
   NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
   [captureOutput setVideoSettings:videoSettings]; 
   self.captureSession = [[[AVCaptureSession alloc] init] autorelease];

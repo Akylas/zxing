@@ -60,6 +60,7 @@ ZXingOrientationMask(UIInterfaceOrientationLandscapeRight))
   BOOL isStatusBarHidden;
   BOOL rotating;
   NSUInteger supportedOrientationsMask;
+  CGRect _cropRect;
 }
 
 //#if HAS_AVFF
@@ -71,6 +72,7 @@ ZXingOrientationMask(UIInterfaceOrientationLandscapeRight))
 @property (nonatomic, retain) ParsedResult *result;
 @property (nonatomic, retain) OverlayView *overlayView;
 @property (nonatomic, retain) ZxingPreview *preview;
+@property (nonatomic, assign) CGRect cropRect;
 
 // interface orientation support.  bit-mask of accepted orientations.
 // see eg ZXingOrientationMask() and ZXingOrientationMaskAll
