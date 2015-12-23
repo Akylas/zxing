@@ -50,7 +50,7 @@ public final class ITFWriter extends OneDimensionalCodeWriter {
   public boolean[] encode(String contents) {
     int length = contents.length();
     if (length % 2 != 0) {
-      throw new IllegalArgumentException("The lenght of the input should be even");
+      throw new IllegalArgumentException("The length of the input should be even");
     }
     if (length > 80) {
       throw new IllegalArgumentException(
@@ -63,8 +63,8 @@ public final class ITFWriter extends OneDimensionalCodeWriter {
       int two = Character.digit(contents.charAt(i+1), 10);
       int[] encoding = new int[18];
       for (int j = 0; j < 5; j++) {
-        encoding[j << 1] = ITFReader.PATTERNS[one][j];
-        encoding[(j << 1) + 1] = ITFReader.PATTERNS[two][j];
+        encoding[2 * j] = ITFReader.PATTERNS[one][j];
+        encoding[2 * j + 1] = ITFReader.PATTERNS[two][j];
       }
       pos += appendPattern(result, pos, encoding, true);
     }

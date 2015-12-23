@@ -19,14 +19,8 @@
 
   <groupId>com.google.zxing</groupId>
   <artifactId>zxing-parent</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>9</version>
-  </parent>
 
   <dependencyManagement>
     <dependencies>
@@ -50,13 +44,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>16.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>javax</groupId>
-        <artifactId>javaee-web-api</artifactId>
-        <version>6.0</version>
-        <scope>provided</scope>
+        <version>18.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.android</groupId>
@@ -65,9 +53,29 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>core</artifactId>
+        <version>${zxing.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>android-core</artifactId>
+        <version>${zxing.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>android-integration</artifactId>
+        <version>${zxing.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>javase</artifactId>
+        <version>${zxing.version}</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -76,6 +84,7 @@
   <modules>
     <module>core</module>
     <module>javase</module>
+    <module>android-core</module>
     <module>android-integration</module>
     <module>zxing.appspot.com</module>
     <module>zxingorg</module>
@@ -85,7 +94,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.7</java.version>
-    <slf4j.version>1.7.7</slf4j.version>
+    <maven.version.min>3.2.1</maven.version.min>
+    <slf4j.version>1.7.13</slf4j.version>
+    <!-- This can't reference project.version as some subprojects version differently -->
+    <zxing.version>3.2.2-SNAPSHOT</zxing.version>
   </properties>
 
   <build>
@@ -107,35 +119,74 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.3.1</version>
+          <version>1.4.1</version>
+          <executions>
+            <execution>
+              <id>enforce</id>
+              <configuration>
+                <rules>
+                  <requireModuleConvergence />
+                  <requirePluginVersions />
+                  <requireUpperBoundDeps />
+                  <dependencyConvergence />
+                  <requireMavenVersion>
+                    <version>${maven.version.min}</version>
+                  </requireMavenVersion>
+                  <requireJavaVersion>
+                    <version>${java.version}</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
+          <version>3.3</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
             <compilerArgs>
               <arg>-Xlint:all</arg>
+              <arg>-Werror</arg>
             </compilerArgs>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.2.1</version>
+          <version>2.4</version>
           <executions>
             <execution>
               <id>attach-sources</id>
               <goals>
-                <goal>jar</goal>
+                <goal>jar-no-fork</goal>
               </goals>
             </execution>
           </executions>
@@ -143,7 +194,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>2.10.3</version>
           <configuration>
             <javadocVersion>${java.version}</javadocVersion>
           </configuration>
@@ -159,7 +210,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>2.5</version>
+          <version>3.0.0</version>
           <configuration>
             <filesets>
               <fileset>
@@ -181,59 +232,90 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>2.5.2</version>
+          <configuration>
+            <createChecksum>true</createChecksum>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.6</version>
+          <version>2.7</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.6</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jarsigner-plugin</artifactId>
-          <version>1.3.2</version>
+          <version>1.4</version>
+          <executions>
+            <execution>
+              <id>signing</id>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+              <phase>package</phase>
+              <configuration>
+                <includes>
+                  <include>target/*.apk</include>
+                </includes>
+                <keystore>../private/ZXing.keystore</keystore>
+                <alias>zxing</alias>
+                <arguments>
+                  <argument>-sigalg</argument>
+                  <argument>MD5withRSA</argument>
+                  <argument>-digestalg</argument>
+                  <argument>SHA1</argument>
+                </arguments>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.5.3</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.scm</groupId>
               <artifactId>maven-scm-provider-gitexe</artifactId>
-              <version>1.9</version>
+              <version>1.9.4</version>
             </dependency>
           </dependencies>
           <configuration>
             <mavenExecutorId>forked-path</mavenExecutorId>
             <tagNameFormat>zxing-@{project.version}</tagNameFormat>
+            <releaseProfiles>release</releaseProfiles>
             <goals>deploy</goals>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.9</version>
+          <version>1.9.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.1</version>
+          <version>2.8.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>2.7</version>
+          <version>2.8.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.5</version>
+          <version>1.6</version>
           <executions>
             <execution>
               <id>sign-artifacts</id>
@@ -251,10 +333,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.17</version>
+          <version>2.19</version>
           <configuration>
-            <forkCount>4</forkCount>
-            <reuseForks>false</reuseForks>
+            <forkCount>0.5C</forkCount>
             <systemPropertyVariables>
               <java.awt.headless>true</java.awt.headless>
             </systemPropertyVariables>
@@ -263,17 +344,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.8</version>
+          <version>2.10</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.6</version>
         </plugin>
         <plugin>
-          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+          <groupId>com.simpligility.maven.plugins</groupId>
           <artifactId>android-maven-plugin</artifactId>
-          <version>3.9.0-rc.1</version>
+          <version>4.3.0</version>
           <extensions>true</extensions>
           <executions>
             <execution>
@@ -286,7 +367,7 @@
           </executions>
           <configuration>
             <sdk>
-              <platform>15</platform>
+              <platform>22</platform>
             </sdk>
             <proguard>
               <skip>true</skip>
@@ -299,44 +380,68 @@
             </zipalign>
             <release>false</release>
             <apkDebug>true</apkDebug>
+            <androidManifestFile>AndroidManifest.xml</androidManifestFile>
+            <resourceDirectory>res</resourceDirectory>
+            <assetsDirectory>assets</assetsDirectory>
+            <nativeLibrariesDirectory>libs</nativeLibrariesDirectory>
+            <disableConflictingDependenciesWarning>true</disableConflictingDependenciesWarning>
           </configuration>
           <dependencies>
             <dependency>
               <groupId>net.sf.proguard</groupId>
               <artifactId>proguard-base</artifactId>
-              <version>4.10</version>
+              <version>5.2.1</version>
             </dependency>
           </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.7</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
           <version>1.8</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.10</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>3.0.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.17</version>
+          <configuration>
+            <configLocation>src/checkstyle/checkstyle.xml</configLocation>
+            <!-- Android generated files -->
+            <excludes>**/R.java,**/BuildConfig.java</excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.10</version>
+          <version>0.11</version>
           <configuration>
             <excludes>
               <exclude>**/.*</exclude>
@@ -354,6 +459,7 @@
               <exclude>**/*.yaml</exclude>
               <exclude>**/gen/**</exclude>
               <exclude>**/resources/**</exclude>
+              <exclude>**/symbolMaps/**</exclude>
               <exclude>**/target/**</exclude>
               <exclude>**/dependency-reduced-pom.xml</exclude>
               <exclude>private/**</exclude>
@@ -361,6 +467,61 @@
               <excludeSubProjects>false</excludeSubProjects>
             </excludes>
           </configuration>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <!-- workaround for Xerces warnings -->
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-core</artifactId>
+              <version>1.6</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xercesImpl</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>clirr-maven-plugin</artifactId>
+          <version>2.7</version>
+          <executions>
+            <execution>
+              <id>check-api</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.7.5.201505241946</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -371,8 +532,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <!-- Work around bogus Maven 3.0.x warning by duplicating version above -->
-        <version>2.7</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -399,8 +558,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <!-- Work around bogus Maven 3.0.x warning by duplicating version above -->
-        <version>2.9.1</version>
         <reportSets>
           <reportSet>
             <id>aggregate</id>
@@ -414,8 +571,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <!-- Work around bogus Maven 3.0.x warning by duplicating version above -->
-        <version>2.5.3</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Max</effort>
@@ -427,8 +582,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <!-- Work around bogus Maven 3.0.x warning by duplicating version above -->
-        <version>2.4</version>
         <reportSets>
           <reportSet>
             <id>aggregate</id>
@@ -482,19 +635,19 @@
   </scm>
 
   <prerequisites>
-    <maven>3.1.1</maven>
+    <maven>${maven.version.min}</maven>
   </prerequisites>
 
   <distributionManagement>
     <repository>
       <id>sonatype-nexus-staging</id>
-      <name>Sonatype Nexus Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
     <snapshotRepository>
       <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </snapshotRepository>
     <site>
       <id>zxing.website</id>
@@ -514,33 +667,16 @@
       <modules>
         <module>android</module>
         <module>androidtest</module>
+        <module>glass</module>
       </modules>
     </profile>
     <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
+      <id>release</id>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <keyname>Sean Owen (ZXing) &lt;srowen@gmail.com&gt;</keyname>
-            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -552,31 +688,9 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jarsigner-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>signing</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <includes>
-                    <include>target/*.apk</include>
-                  </includes>
-                  <keystore>../private/ZXing.keystore</keystore>
-                  <alias>zxing</alias>
-                  <arguments>
-                    <argument>-sigalg</argument>
-                    <argument>MD5withRSA</argument>
-                    <argument>-digestalg</argument>
-                    <argument>SHA1</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
           <plugin>
-            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <groupId>com.simpligility.maven.plugins</groupId>
             <artifactId>android-maven-plugin</artifactId>
             <configuration>
               <proguard>
@@ -589,6 +703,17 @@
               <release>true</release>
               <apkDebug>false</apkDebug>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
           </plugin>
         </plugins>
       </build>

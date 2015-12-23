@@ -201,7 +201,7 @@ public class Detector {
                                       float moduleSize) throws NotFoundException {
     int tltrCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, topRight) / moduleSize);
     int tlblCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, bottomLeft) / moduleSize);
-    int dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
+    int dimension = ((tltrCentersDimension + tlblCentersDimension) / 2) + 7;
     switch (dimension & 0x03) { // mod 4
       case 0:
         dimension++;
@@ -261,7 +261,7 @@ public class Detector {
   /**
    * See {@link #sizeOfBlackWhiteBlackRun(int, int, int, int)}; computes the total width of
    * a finder pattern by looking for a black-white-black run from the center in the direction
-   * of another point (another finder pattern center), and in the opposite direction too.</p>
+   * of another point (another finder pattern center), and in the opposite direction too.
    */
   private float sizeOfBlackWhiteBlackRunBothWays(int fromX, int fromY, int toX, int toY) {
 
@@ -318,7 +318,7 @@ public class Detector {
 
     int dx = Math.abs(toX - fromX);
     int dy = Math.abs(toY - fromY);
-    int error = -dx >> 1;
+    int error = -dx / 2;
     int xstep = fromX < toX ? 1 : -1;
     int ystep = fromY < toY ? 1 : -1;
 

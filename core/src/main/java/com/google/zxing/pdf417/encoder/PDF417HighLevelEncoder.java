@@ -25,9 +25,8 @@ import com.google.zxing.common.CharacterSetECI;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
+import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * PDF417 high-level encoder following the algorithm described in ISO/IEC 15438:2001(E) in
@@ -127,7 +126,7 @@ final class PDF417HighLevelEncoder {
   private static final byte[] MIXED = new byte[128];
   private static final byte[] PUNCTUATION = new byte[128];
 
-  private static final List<String> DEFAULT_ENCODING_NAMES = Arrays.asList("Cp437", "IBM437");
+  private static final Charset DEFAULT_ENCODING = Charset.forName("ISO-8859-1");
 
   private PDF417HighLevelEncoder() {
   }
@@ -166,7 +165,9 @@ final class PDF417HighLevelEncoder {
     //the codewords 0..928 are encoded as Unicode characters
     StringBuilder sb = new StringBuilder(msg.length());
 
-    if (encoding != null || !DEFAULT_ENCODING_NAMES.contains(encoding.name())) {
+    if (encoding == null) {
+      encoding = DEFAULT_ENCODING;
+    } else if (!DEFAULT_ENCODING.equals(encoding)) {
       CharacterSetECI eci = CharacterSetECI.getCharacterSetECIByName(encoding.name());
       if (eci != null) {
         encodingECI(eci.getValue(), sb);
@@ -178,12 +179,11 @@ final class PDF417HighLevelEncoder {
     int textSubMode = SUBMODE_ALPHA;
 
     // User selected encoding mode
-    byte[] bytes = null; //Fill later and only if needed
     if (compaction == Compaction.TEXT) {
       encodeText(msg, p, len, sb, textSubMode);
 
     } else if (compaction == Compaction.BYTE) {
-      bytes = toBytes(msg, encoding);
+      byte[] bytes = msg.getBytes(encoding);
       encodeBinary(bytes, p, bytes.length, BYTE_COMPACTION, sb);
 
     } else if (compaction == Compaction.NUMERIC) {
@@ -211,19 +211,17 @@ final class PDF417HighLevelEncoder {
             textSubMode = encodeText(msg, p, t, sb, textSubMode);
             p += t;
           } else {
-            if (bytes == null) {
-              bytes = toBytes(msg, encoding);
-            }
-            int b = determineConsecutiveBinaryCount(msg, bytes, p);
+            int b = determineConsecutiveBinaryCount(msg, p, encoding);
             if (b == 0) {
               b = 1;
             }
-            if (b == 1 && encodingMode == TEXT_COMPACTION) {
+            byte[] bytes = msg.substring(p, p + b).getBytes(encoding);
+            if (bytes.length == 1 && encodingMode == TEXT_COMPACTION) {
               //Switch for one byte (instead of latch)
-              encodeBinary(bytes, p, 1, TEXT_COMPACTION, sb);
+              encodeBinary(bytes, 0, 1, TEXT_COMPACTION, sb);
             } else {
               //Mode latch performed by encodeBinary()
-              encodeBinary(bytes, p, b, encodingMode, sb);
+              encodeBinary(bytes, 0, bytes.length, encodingMode, sb);
               encodingMode = BYTE_COMPACTION;
               textSubMode = SUBMODE_ALPHA; //Reset after latch
             }
@@ -234,24 +232,6 @@ final class PDF417HighLevelEncoder {
     }
 
     return sb.toString();
-  }
-
-  private static byte[] toBytes(String msg, Charset encoding) throws WriterException {
-    // Defer instantiating default Charset until needed, since it may be for an unsupported
-    // encoding. For example the default of Cp437 doesn't seem to exist on Android.
-    if (encoding == null) {
-      for (String encodingName : DEFAULT_ENCODING_NAMES) {
-        try {
-          encoding = Charset.forName(encodingName);
-        } catch (UnsupportedCharsetException uce) {
-          // continue
-        }
-      }
-      if (encoding == null) {
-        throw new WriterException("No support for any encoding: " + DEFAULT_ENCODING_NAMES);
-      }
-    }
-    return msg.getBytes(encoding);
   }
 
   /**
@@ -439,7 +419,7 @@ final class PDF417HighLevelEncoder {
     StringBuilder tmp = new StringBuilder(count / 3 + 1);
     BigInteger num900 = BigInteger.valueOf(900);
     BigInteger num0 = BigInteger.valueOf(0);
-    while (idx < count - 1) {
+    while (idx < count) {
       tmp.setLength(0);
       int len = Math.min(44, count - idx);
       String part = '1' + msg.substring(startpos + idx, startpos + idx + len);
@@ -548,12 +528,13 @@ final class PDF417HighLevelEncoder {
    * Determines the number of consecutive characters that are encodable using binary compaction.
    *
    * @param msg      the message
-   * @param bytes    the message converted to a byte array
    * @param startpos the start position within the message
+   * @param encoding the charset used to convert the message to a byte array
    * @return the requested character count
    */
-  private static int determineConsecutiveBinaryCount(CharSequence msg, byte[] bytes, int startpos)
+  private static int determineConsecutiveBinaryCount(String msg, int startpos, Charset encoding)
       throws WriterException {
+    final CharsetEncoder encoder = encoding.newEncoder();
     int len = msg.length();
     int idx = startpos;
     while (idx < len) {
@@ -572,24 +553,9 @@ final class PDF417HighLevelEncoder {
       if (numericCount >= 13) {
         return idx - startpos;
       }
-      int textCount = 0;
-      while (textCount < 5 && isText(ch)) {
-        textCount++;
-        int i = idx + textCount;
-        if (i >= len) {
-          break;
-        }
-        ch = msg.charAt(i);
-      }
-      if (textCount >= 5) {
-        return idx - startpos;
-      }
       ch = msg.charAt(idx);
 
-      //Check if character is encodable
-      //Sun returns a ASCII 63 (?) for a character that cannot be mapped. Let's hope all
-      //other VMs do the same
-      if (bytes[idx] == 63 && ch != '?') {
+      if (!encoder.canEncode(ch)) {
         throw new WriterException("Non-encodable character detected: " + ch + " (Unicode: " + (int) ch + ')');
       }
       idx++;

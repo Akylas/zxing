@@ -77,9 +77,9 @@ public final class Encoder {
                               Map<EncodeHintType,?> hints) throws WriterException {
 
     // Determine what character encoding has been specified by the caller, if any
-    String encoding = hints == null ? null : (String) hints.get(EncodeHintType.CHARACTER_SET);
-    if (encoding == null) {
-      encoding = DEFAULT_BYTE_MODE_ENCODING;
+    String encoding = DEFAULT_BYTE_MODE_ENCODING;
+    if (hints != null && hints.containsKey(EncodeHintType.CHARACTER_SET)) {
+      encoding = hints.get(EncodeHintType.CHARACTER_SET).toString();
     }
 
     // Pick an encoding mode appropriate for the content. Note that this will not attempt to use
@@ -181,9 +181,9 @@ public final class Encoder {
    * if it is Shift_JIS, and the input is only double-byte Kanji, then we return {@link Mode#KANJI}.
    */
   private static Mode chooseMode(String content, String encoding) {
-    if ("Shift_JIS".equals(encoding)) {
+    if ("Shift_JIS".equals(encoding) && isOnlyDoubleByteKanji(content)) {
       // Choose Kanji mode if all input are double-byte characters
-      return isOnlyDoubleByteKanji(content) ? Mode.KANJI : Mode.BYTE;
+      return Mode.KANJI;
     }
     boolean hasNumeric = false;
     boolean hasAlphanumeric = false;
@@ -268,7 +268,7 @@ public final class Encoder {
    * Terminate bits as described in 8.4.8 and 8.4.9 of JISX0510:2004 (p.24).
    */
   static void terminateBits(int numDataBytes, BitArray bits) throws WriterException {
-    int capacity = numDataBytes << 3;
+    int capacity = numDataBytes * 8;
     if (bits.getSize() > capacity) {
       throw new WriterException("data bits cannot fit in the QR Code" + bits.getSize() + " > " +
           capacity);
